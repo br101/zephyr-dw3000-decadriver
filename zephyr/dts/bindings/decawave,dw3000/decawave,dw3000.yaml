@@ -1,0 +1,35 @@
+# Copyright (c) 2022, Bruno Randolf <br1@einfach.org>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+description: Qorvo/Decawave DW3000 (SPI)
+
+compatible: "decawave,dw3000"
+
+include: spi-device.yaml
+
+properties:
+    reset-gpios:
+      type: phandle-array
+      required: true
+      description: RESET pin (active low)
+
+    irq-gpios:
+      type: phandle-array
+      required: true
+      description: IRQ pin (active low)
+
+    wakeup-gpios:
+      type: phandle-array
+      required: false
+      description: WAKEUP pin (active low)
+
+    spi-pol-gpios:
+      type: phandle-array
+      required: false
+      description: SPI Polarity pin
+
+    spi-pha-gpios:
+      type: phandle-array
+      required: false
+      description: SPI Phase pin

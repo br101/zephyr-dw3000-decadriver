@@ -1,0 +1,5 @@
+menuconfig DW3000
+	bool "DW3000"
+	depends on SPI
+	help
+		Qorvo/Decawave DW3000 driver

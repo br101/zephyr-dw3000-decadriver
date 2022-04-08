@@ -1,0 +1,79 @@
+#include <device.h>
+#include <drivers/gpio.h>
+#include <logging/log.h>
+#include <zephyr.h>
+
+#include "dw3000.h"
+
+LOG_MODULE_REGISTER(dw3000);
+
+#define DW_INST DT_INST(0, decawave_dw3000)
+
+static struct gpio_callback gpio_cb;
+
+struct dw3000_config {
+	struct gpio_dt_spec gpio_irq;
+	struct gpio_dt_spec gpio_reset;
+	struct gpio_dt_spec gpio_wakeup;
+	struct gpio_dt_spec gpio_spi_pol;
+	struct gpio_dt_spec gpio_spi_pha;
+};
+
+static const struct dw3000_config conf = {
+	.gpio_irq = GPIO_DT_SPEC_GET_OR(DW_INST, irq_gpios, {0}),
+	.gpio_reset = GPIO_DT_SPEC_GET_OR(DW_INST, reset_gpios, {0}),
+	.gpio_wakeup = GPIO_DT_SPEC_GET_OR(DW_INST, wakeup_gpios, {0}),
+	.gpio_spi_pol = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pol_gpios, {0}),
+	.gpio_spi_pha = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pha_gpios, {0}),
+};
+
+static void dw3000_interrupt_handler(const struct device* dev,
+									 struct gpio_callback* cb, uint32_t pins)
+{
+	LOG_INF("ISR");
+}
+
+int dw3000_init()
+{
+	/* Interrupt */
+	if (conf.gpio_irq.port) {
+		gpio_pin_configure_dt(&conf.gpio_irq, GPIO_INPUT);
+		gpio_init_callback(&gpio_cb, dw3000_interrupt_handler,
+						   BIT(conf.gpio_irq.pin));
+		gpio_add_callback(conf.gpio_irq.port, &gpio_cb);
+		gpio_pin_interrupt_configure_dt(&conf.gpio_irq, GPIO_INT_EDGE_RISING);
+
+		LOG_INF("IRQ on %s pin %d", conf.gpio_irq.port->name,
+				conf.gpio_irq.pin);
+	}
+
+	/* Reset */
+	if (conf.gpio_reset.port) {
+		gpio_pin_configure_dt(&conf.gpio_reset, GPIO_OUTPUT_ACTIVE);
+		LOG_INF("RESET on %s pin %d", conf.gpio_reset.port->name,
+				conf.gpio_reset.pin);
+	}
+
+	/* Wakeup (optional) */
+	if (conf.gpio_wakeup.port) {
+		gpio_pin_configure_dt(&conf.gpio_wakeup, GPIO_OUTPUT_ACTIVE);
+		LOG_INF("WAKEUP on %s pin %d", conf.gpio_wakeup.port->name,
+				conf.gpio_wakeup.pin);
+	}
+
+	/* SPI Polarity (optional) */
+	if (conf.gpio_spi_pol.port) {
+		gpio_pin_configure_dt(&conf.gpio_spi_pol, GPIO_OUTPUT_INACTIVE);
+		LOG_INF("SPI_POL on %s pin %d", conf.gpio_spi_pol.port->name,
+				conf.gpio_spi_pol.pin);
+	}
+
+	/* SPI Phase (optional) */
+	if (conf.gpio_spi_pha.port) {
+		gpio_pin_configure_dt(&conf.gpio_spi_pha, GPIO_OUTPUT_INACTIVE);
+		LOG_INF("SPI_PHA on %s pin %d", conf.gpio_spi_pha.port->name,
+				conf.gpio_spi_pha.pin);
+	}
+
+	return 0;
+}

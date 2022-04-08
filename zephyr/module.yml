@@ -1,0 +1,10 @@
+# Copyright (c) 2022 Bruno Randolf <br1@einfach.org>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+build:
+  cmake: zephyr
+  kconfig: zephyr/Kconfig
+
+  settings:
+    dts_root: zephyr
