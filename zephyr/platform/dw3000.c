@@ -30,26 +30,19 @@ static const struct dw3000_config conf = {
 int dw3000_spi_init(void);	// deca_spi.c
 void dw3000_spi_fini(void); // deca_spi.c
 
+static dw3000_isr_t dw3000_isr;
+
 static void dw3000_interrupt_handler(const struct device* dev,
 									 struct gpio_callback* cb, uint32_t pins)
 {
 	LOG_INF("ISR");
+	if (dw3000_isr) {
+		dw3000_isr();
+	}
 }
 
 int dw3000_init()
 {
-	/* Interrupt */
-	if (conf.gpio_irq.port) {
-		gpio_pin_configure_dt(&conf.gpio_irq, GPIO_INPUT);
-		gpio_init_callback(&gpio_cb, dw3000_interrupt_handler,
-						   BIT(conf.gpio_irq.pin));
-		gpio_add_callback(conf.gpio_irq.port, &gpio_cb);
-		gpio_pin_interrupt_configure_dt(&conf.gpio_irq, GPIO_INT_EDGE_RISING);
-
-		LOG_INF("IRQ on %s pin %d", conf.gpio_irq.port->name,
-				conf.gpio_irq.pin);
-	}
-
 	/* Reset */
 	if (conf.gpio_reset.port) {
 		gpio_pin_configure_dt(&conf.gpio_reset, GPIO_INPUT);
@@ -79,6 +72,24 @@ int dw3000_init()
 	}
 
 	return dw3000_spi_init();
+}
+
+int dw3000_set_isr(dw3000_isr_t isr)
+{
+	/* Interrupt */
+	if (conf.gpio_irq.port) {
+		gpio_pin_configure_dt(&conf.gpio_irq, GPIO_INPUT);
+		gpio_init_callback(&gpio_cb, dw3000_interrupt_handler,
+						   BIT(conf.gpio_irq.pin));
+		gpio_add_callback(conf.gpio_irq.port, &gpio_cb);
+		gpio_pin_interrupt_configure_dt(&conf.gpio_irq, GPIO_INT_EDGE_RISING);
+
+		LOG_INF("IRQ on %s pin %d", conf.gpio_irq.port->name,
+				conf.gpio_irq.pin);
+		return 0;
+	} else {
+		return -ENOENT;
+	}
 }
 
 void dw3000_fini(void)
