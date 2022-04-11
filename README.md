@@ -4,9 +4,9 @@ This is a Zephyr module which implements a driver for Qorvo/Decawave DW3000.
 It contains not much more than the `decadriver/` from the DWS3000_Release_v1.1 
 (DW3000_API_C0_rev4p0) and the necessary Zephyr bindings for GPIO, SPI and DTS.
 
-The main idea for this project is that it should be clean from Decawave example code
-and the "port" abstractions used there and usable for projects which want to use DW3000
-and the functions in decadriver, but not the example code (and the mess around it).
+The main idea is that this module contains only the minimal code to drive the 
+DW3000, so it can be used in different projects - and keep it clean from Decawave
+example code and the port abstractions and genral mess around there.
 
 It can be used by adding this as a zephyr module in `west.yml`, or by adding the module
 to CMakeLists.txt, e.g.:
@@ -46,6 +46,8 @@ CONFIG_DW3000=y
 CONFIG_SPI=y
 CONFIG_GPIO=y
 ```
+
+And then you can use the functions defined in `dw3000.h` and `deca_device_api.h`.
 
 There is a separate project which uses this driver for running the
 Qorvo/Decawave DWS3000 examples here:
