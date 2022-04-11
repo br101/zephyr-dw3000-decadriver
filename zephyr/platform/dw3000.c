@@ -27,6 +27,9 @@ static const struct dw3000_config conf = {
 	.gpio_spi_pha = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pha_gpios, {0}),
 };
 
+int dw3000_spi_init(void);	// deca_spi.c
+void dw3000_spi_fini(void); // deca_spi.c
+
 static void dw3000_interrupt_handler(const struct device* dev,
 									 struct gpio_callback* cb, uint32_t pins)
 {
@@ -49,7 +52,7 @@ int dw3000_init()
 
 	/* Reset */
 	if (conf.gpio_reset.port) {
-		gpio_pin_configure_dt(&conf.gpio_reset, GPIO_OUTPUT_ACTIVE);
+		gpio_pin_configure_dt(&conf.gpio_reset, GPIO_INPUT);
 		LOG_INF("RESET on %s pin %d", conf.gpio_reset.port->name,
 				conf.gpio_reset.pin);
 	}
@@ -75,5 +78,24 @@ int dw3000_init()
 				conf.gpio_spi_pha.pin);
 	}
 
-	return 0;
+	return dw3000_spi_init();
+}
+
+void dw3000_fini(void)
+{
+	// TODO
+	dw3000_spi_fini();
+}
+
+void dw3000_hw_reset()
+{
+	if (!conf.gpio_reset.port) {
+		LOG_ERR("No HW reset configured");
+		return;
+	}
+
+	gpio_pin_configure_dt(&conf.gpio_reset, GPIO_OUTPUT_ACTIVE);
+	k_msleep(1); // 10 us?
+	gpio_pin_configure_dt(&conf.gpio_reset, GPIO_INPUT);
+	k_msleep(2);
 }
