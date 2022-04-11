@@ -1,11 +1,21 @@
 # Zephyr Driver for Qorvo/Decawave DW3000
 
-This is a Zephyr module which implements a driver of Qorvo/Decawave DW3000.
+This is a Zephyr module which implements a driver for Qorvo/Decawave DW3000.
 It contains not much more than the `decadriver/` from the DWS3000_Release_v1.1 
 (DW3000_API_C0_rev4p0) and the necessary Zephyr bindings for GPIO, SPI and DTS.
 
-It can be used by adding this as a zephyr module in `west.yml`. Then you need to
-add a `decawave,dw3000` compatible device to your .dts, e.g.:
+The main idea for this project is that it should be clean from Decawave example code
+and the "port" abstractions used there and usable for projects which want to use DW3000
+and the functions in decadriver, but not the example code (and the mess around it).
+
+It can be used by adding this as a zephyr module in `west.yml`, or by adding the module
+to CMakeLists.txt, e.g.:
+
+```
+list(APPEND ZEPHYR_EXTRA_MODULES ${CMAKE_CURRENT_SOURCE_DIR}/dw3000-decadriver/)
+```
+
+Then you only need to add a `decawave,dw3000` compatible device to your .dts, e.g.:
 
 ```
 &spi0 {
@@ -22,9 +32,9 @@ add a `decawave,dw3000` compatible device to your .dts, e.g.:
 		reg = <0>;
 		reset-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
 		irq-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
-		wakeup-gpios = <&gpio0 1 GPIO_ACTIVE_LOW>;
-		spi-pol-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
-		spi-pha-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
+		wakeup-gpios = <&gpio0 8 GPIO_ACTIVE_LOW>;
+		//spi-pol-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
+		//spi-pha-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
 	};
 };
 ```
@@ -36,3 +46,9 @@ CONFIG_DW3000=y
 CONFIG_SPI=y
 CONFIG_GPIO=y
 ```
+
+There is a separate project which uses this driver for running the
+Qorvo/Decawave DWS3000 examples here:
+https://github.com/br101/zephyr-dw3000-examples
+
+Thanks to https://github.com/foldedtoad/dwm3000
