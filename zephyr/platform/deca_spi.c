@@ -15,6 +15,8 @@
 
 LOG_MODULE_REGISTER(dw3000_spi);
 
+#define TX_WAIT_RESP_NRF52840_DELAY 30
+
 #define DW_INST DT_INST(0, decawave_dw3000)
 #define DW_SPI	DT_PARENT(DT_INST(0, decawave_dw3000))
 
