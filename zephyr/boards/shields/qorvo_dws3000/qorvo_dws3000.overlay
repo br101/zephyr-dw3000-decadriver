@@ -16,9 +16,9 @@
         wakeup-gpios  = <&arduino_header 15 GPIO_ACTIVE_LOW>; /* D9 */
         irq-gpios     = <&arduino_header 14 GPIO_ACTIVE_LOW>; /* D8 */
         reset-gpios   = <&arduino_header 13 GPIO_ACTIVE_LOW>; /* D7 */
-        rx-led-gpios  = <&arduino_header 10 GPIO_ACTIVE_LOW>; /* D4 */
-        tx-led-gpios  = <&arduino_header  9 GPIO_ACTIVE_LOW>; /* D3 */
-        spi-pol_gpios = <&arduino_header  7 GPIO_ACTIVE_LOW>; /* D1 */
-        spi-pha_gpios = <&arduino_header  6 GPIO_ACTIVE_LOW>; /* D0 */
+        //rx-led-gpios  = <&arduino_header 10 GPIO_ACTIVE_LOW>; /* D4 */
+        //tx-led-gpios  = <&arduino_header  9 GPIO_ACTIVE_LOW>; /* D3 */
+        spi-pol-gpios = <&arduino_header  7 GPIO_ACTIVE_LOW>; /* D1 */
+        spi-pha-gpios = <&arduino_header  6 GPIO_ACTIVE_LOW>; /* D0 */
     };
 };
