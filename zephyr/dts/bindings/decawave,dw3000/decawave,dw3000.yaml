@@ -17,7 +17,7 @@ properties:
     irq-gpios:
       type: phandle-array
       required: true
-      description: IRQ pin (active low)
+      description: IRQ pin (active high)
 
     wakeup-gpios:
       type: phandle-array

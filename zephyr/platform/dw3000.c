@@ -66,14 +66,12 @@ int dw3000_init()
 
 static void dw3000_isr_work_handler(struct k_work* item)
 {
-	LOG_INF("ISR WORK");
 	dwt_isr();
 }
 
 static void dw3000_isr(const struct device* dev, struct gpio_callback* cb,
 					   uint32_t pins)
 {
-	LOG_INF("ISR");
 	k_work_submit(&dw3000_isr_work);
 }
 
