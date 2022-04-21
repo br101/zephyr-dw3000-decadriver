@@ -3,6 +3,7 @@
 #include <logging/log.h>
 #include <zephyr.h>
 
+#include "deca_device_api.h"
 #include "dw3000.h"
 
 LOG_MODULE_REGISTER(dw3000);
