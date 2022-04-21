@@ -6,4 +6,10 @@ if SHIELD_QORVO_DWS3000
 config SPI
 	default y
 
+config GPIO
+	default y
+
+config DW3000
+	default y
+
 endif # SHIELD_SHIELD_QORVO_DWS3000
