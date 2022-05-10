@@ -3,6 +3,10 @@
 #include <logging/log.h>
 #include <zephyr.h>
 
+// TEST
+#include <stdlib.h>
+#include "deca_interface.h"
+
 #include "deca_device_api.h"
 #include "dw3000.h"
 
@@ -28,6 +32,13 @@ static const struct dw3000_config conf = {
 	.gpio_spi_pol = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pol_gpios, {0}),
 	.gpio_spi_pha = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pha_gpios, {0}),
 };
+
+//TEST
+struct dwt_driver_s __dw_drivers_start[3] __attribute__((section(".dw_drivers")));
+struct dwt_driver_s *__dw_drivers_end __attribute__((section(".dw_drivers")));
+extern struct dwt_driver_s *dw3000_driver;
+extern struct dwt_driver_s *dw3700_driver;
+extern struct dwt_driver_s *dw3720_driver;
 
 int dw3000_spi_init(void);	// deca_spi.c
 void dw3000_spi_fini(void); // deca_spi.c
@@ -61,6 +72,12 @@ int dw3000_init()
 		LOG_INF("SPI_PHA on %s pin %d", conf.gpio_spi_pha.port->name,
 				conf.gpio_spi_pha.pin);
 	}
+
+	//TEST
+	memcpy(&__dw_drivers_start[0], &dw3000_driver, sizeof(struct dwt_driver_s));
+	memcpy(&__dw_drivers_start[1], &dw3700_driver, sizeof(struct dwt_driver_s));
+	memcpy(&__dw_drivers_start[2], &dw3720_driver, sizeof(struct dwt_driver_s));
+	__dw_drivers_end = &__dw_drivers_start[0] + 3;
 
 	return dw3000_spi_init();
 }
