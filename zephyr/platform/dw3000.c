@@ -3,7 +3,7 @@
 #include <logging/log.h>
 #include <zephyr.h>
 
-// TEST
+//TEST
 #include <stdlib.h>
 #include "deca_interface.h"
 
@@ -34,8 +34,10 @@ static const struct dw3000_config conf = {
 };
 
 //TEST
+#if 0
 struct dwt_driver_s __dw_drivers_start[3] __attribute__((section(".dw_drivers")));
 struct dwt_driver_s *__dw_drivers_end __attribute__((section(".dw_drivers")));
+#endif
 extern struct dwt_driver_s *dw3000_driver;
 extern struct dwt_driver_s *dw3700_driver;
 extern struct dwt_driver_s *dw3720_driver;
@@ -74,10 +76,20 @@ int dw3000_init()
 	}
 
 	//TEST
+#if 1
+	/* Access library symbols (perhaps removed by optimizing compiler?) */
+	uint32_t fee = &dw3000_driver;
+	printk("foo 0x%x\n", fee);
+	uint32_t fie = &dw3700_driver;
+	printk("foo 0x%x\n", fie);
+	uint32_t foe = &dw3720_driver;
+	printk("foo 0x%x\n", foe);
+#else
 	memcpy(&__dw_drivers_start[0], &dw3000_driver, sizeof(struct dwt_driver_s));
 	memcpy(&__dw_drivers_start[1], &dw3700_driver, sizeof(struct dwt_driver_s));
 	memcpy(&__dw_drivers_start[2], &dw3720_driver, sizeof(struct dwt_driver_s));
 	__dw_drivers_end = &__dw_drivers_start[0] + 3;
+#endif
 
 	return dw3000_spi_init();
 }
