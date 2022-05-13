@@ -28,10 +28,6 @@ static const struct dw3000_config conf = {
 	.gpio_spi_pha = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pha_gpios, {0}),
 };
 
-extern struct dwt_driver_s *dw3000_driver;
-extern struct dwt_driver_s *dw3700_driver;
-extern struct dwt_driver_s *dw3720_driver;
-
 int dw3000_spi_init(void);	// deca_spi.c
 void dw3000_spi_fini(void); // deca_spi.c
 
