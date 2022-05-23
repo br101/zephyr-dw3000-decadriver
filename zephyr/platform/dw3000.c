@@ -112,3 +112,9 @@ void dw3000_hw_reset()
 	gpio_pin_configure_dt(&conf.gpio_reset, GPIO_INPUT);
 	k_msleep(2);
 }
+
+bool dw3000_wakeup_pin(void)
+{
+	// TODO
+	return false;
+}
