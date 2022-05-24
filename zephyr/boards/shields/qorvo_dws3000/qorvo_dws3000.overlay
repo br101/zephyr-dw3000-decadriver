@@ -13,7 +13,7 @@
         label = "DWS3000";
         spi-max-frequency = <1000000>;
         reg = <0>;
-        wakeup-gpios  = <&arduino_header 15 GPIO_ACTIVE_LOW>; /* D9 */
+        wakeup-gpios  = <&arduino_header 15 GPIO_ACTIVE_HIGH>; /* D9 */
         irq-gpios     = <&arduino_header 14 GPIO_ACTIVE_HIGH>; /* D8 */
         reset-gpios   = <&arduino_header 13 GPIO_ACTIVE_LOW>; /* D7 */
         spi-pol-gpios = <&arduino_header  7 GPIO_ACTIVE_LOW>; /* D1 */

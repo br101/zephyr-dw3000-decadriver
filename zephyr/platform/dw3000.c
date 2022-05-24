@@ -2,6 +2,7 @@
 #include <drivers/gpio.h>
 #include <logging/log.h>
 #include <zephyr.h>
+
 #include "deca_device_api.h"
 #include "dw3000.h"
 
@@ -28,8 +29,10 @@ static const struct dw3000_config conf = {
 	.gpio_spi_pha = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pha_gpios, {0}),
 };
 
-int dw3000_spi_init(void);	// deca_spi.c
-void dw3000_spi_fini(void); // deca_spi.c
+/* deca_spi.c */
+int dw3000_spi_init(void);
+void dw3000_spi_fini(void);
+void dw3000_spi_wakeup(void);
 
 int dw3000_init()
 {
@@ -113,8 +116,25 @@ void dw3000_hw_reset()
 	k_msleep(2);
 }
 
-bool dw3000_wakeup_pin(void)
+/** wakeup either using the WAKEUP pin or SPI CS */
+void dw3000_wakeup(void)
 {
-	// TODO
-	return false;
+	if (conf.gpio_wakeup.port) {
+		/* Use WAKEUP pin if available */
+		LOG_INF("WAKEUP PIN");
+		gpio_pin_set_dt(&conf.gpio_wakeup, 1);
+	} else {
+		/* Use SPI CS pin */
+		LOG_INF("WAKEUP CS");
+		dw3000_spi_wakeup();
+	}
+	k_sleep(K_MSEC(1));
+}
+
+/** set WAKEUP pin low if available */
+void dw3000_wakeup_pin_low(void)
+{
+	if (conf.gpio_wakeup.port) {
+		gpio_pin_set_dt(&conf.gpio_wakeup, 0);
+	}
 }

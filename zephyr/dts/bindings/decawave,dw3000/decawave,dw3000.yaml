@@ -22,7 +22,7 @@ properties:
     wakeup-gpios:
       type: phandle-array
       required: false
-      description: WAKEUP pin (active low)
+      description: WAKEUP pin (active high)
 
     spi-pol-gpios:
       type: phandle-array

@@ -5,6 +5,7 @@
 
 /* This file implements the functions required by decadriver */
 
+/* deca_spi.c */
 int dw3000_writetospiwithcrc(uint16_t headerLength, const uint8_t* headerBuffer,
 					  uint16_t bodyLength, const uint8_t* bodyBuffer,
 					  uint8_t crc8);
@@ -12,10 +13,6 @@ int dw3000_writetospi(uint16_t headerLength, const uint8_t* headerBuffer,
 			   uint16_t bodyLength, const uint8_t* bodyBuffer);
 int dw3000_readfromspi(uint16_t headerLength, uint8_t* headerBuffer,
 				uint16_t readLength, uint8_t* readBuffer);
-
-void wakeup_device_with_io(void)
-{
-}
 
 decaIrqStatus_t decamutexon(void)
 {
@@ -50,5 +47,5 @@ const struct dwt_probe_s dw3000_probe_interf =
 {
     .dw = NULL,
     .spi = (void*)&dw3000_spi_fct,
-    .wakeup_device_with_io = wakeup_device_with_io
+    .wakeup_device_with_io = dw3000_wakeup,
 };

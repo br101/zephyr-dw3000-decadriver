@@ -170,3 +170,10 @@ int dw3000_readfromspi(uint16_t headerLength, uint8_t* headerBuffer,
 
 	return ret;
 }
+
+void dw3000_spi_wakeup()
+{
+	gpio_pin_set_dt(&cs_ctrl->gpio, 1);
+	k_sleep(K_USEC(500));
+	gpio_pin_set_dt(&cs_ctrl->gpio, 0);
+}
