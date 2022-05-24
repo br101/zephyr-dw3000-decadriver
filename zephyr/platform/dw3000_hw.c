@@ -4,7 +4,8 @@
 #include <zephyr.h>
 
 #include "deca_device_api.h"
-#include "dw3000.h"
+#include "dw3000_hw.h"
+#include "dw3000_spi.h"
 
 LOG_MODULE_REGISTER(dw3000);
 
@@ -29,12 +30,7 @@ static const struct dw3000_config conf = {
 	.gpio_spi_pha = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pha_gpios, {0}),
 };
 
-/* deca_spi.c */
-int dw3000_spi_init(void);
-void dw3000_spi_fini(void);
-void dw3000_spi_wakeup(void);
-
-int dw3000_init()
+int dw3000_hw_init()
 {
 	/* Reset */
 	if (conf.gpio_reset.port) {
@@ -67,25 +63,25 @@ int dw3000_init()
 	return dw3000_spi_init();
 }
 
-static void dw3000_isr_work_handler(struct k_work* item)
+static void dw3000_hw_isr_work_handler(struct k_work* item)
 {
 	dwt_isr();
 }
 
-static void dw3000_isr(const struct device* dev, struct gpio_callback* cb,
+static void dw3000_hw_isr(const struct device* dev, struct gpio_callback* cb,
 					   uint32_t pins)
 {
 	k_work_submit(&dw3000_isr_work);
 }
 
-int dw3000_init_interrupt(void)
+int dw3000_hw_init_interrupt(void)
 {
-	k_work_init(&dw3000_isr_work, dw3000_isr_work_handler);
+	k_work_init(&dw3000_isr_work, dw3000_hw_isr_work_handler);
 
 	/* Interrupt */
 	if (conf.gpio_irq.port) {
 		gpio_pin_configure_dt(&conf.gpio_irq, GPIO_INPUT);
-		gpio_init_callback(&gpio_cb, dw3000_isr, BIT(conf.gpio_irq.pin));
+		gpio_init_callback(&gpio_cb, dw3000_hw_isr, BIT(conf.gpio_irq.pin));
 		gpio_add_callback(conf.gpio_irq.port, &gpio_cb);
 		gpio_pin_interrupt_configure_dt(&conf.gpio_irq, GPIO_INT_EDGE_RISING);
 
@@ -97,7 +93,7 @@ int dw3000_init_interrupt(void)
 	}
 }
 
-void dw3000_fini(void)
+void dw3000_hw_fini(void)
 {
 	// TODO
 	dw3000_spi_fini();
@@ -117,7 +113,7 @@ void dw3000_hw_reset()
 }
 
 /** wakeup either using the WAKEUP pin or SPI CS */
-void dw3000_wakeup(void)
+void dw3000_hw_wakeup(void)
 {
 	if (conf.gpio_wakeup.port) {
 		/* Use WAKEUP pin if available */
@@ -132,7 +128,7 @@ void dw3000_wakeup(void)
 }
 
 /** set WAKEUP pin low if available */
-void dw3000_wakeup_pin_low(void)
+void dw3000_hw_wakeup_pin_low(void)
 {
 	if (conf.gpio_wakeup.port) {
 		gpio_pin_set_dt(&conf.gpio_wakeup, 0);
