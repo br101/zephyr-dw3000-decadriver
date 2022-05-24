@@ -85,11 +85,11 @@ int dw3000_spi_write_crc(uint16_t headerLength, const uint8_t* headerBuffer,
 {
 	const struct spi_buf tx_buf[3] = {
 		{
-			.buf = headerBuffer,
+			.buf = (void*)headerBuffer,
 			.len = headerLength,
 		},
 		{
-			.buf = bodyBuffer,
+			.buf = (void*)bodyBuffer,
 			.len = bodyLength,
 		},
 		{
@@ -110,11 +110,11 @@ int dw3000_spi_write(uint16_t headerLength, const uint8_t* headerBuffer,
 {
 	const struct spi_buf tx_buf[2] = {
 		{
-			.buf = headerBuffer,
+			.buf = (void*)headerBuffer,
 			.len = headerLength,
 		},
 		{
-			.buf = bodyBuffer,
+			.buf = (void*)bodyBuffer,
 			.len = bodyLength,
 		},
 	};
