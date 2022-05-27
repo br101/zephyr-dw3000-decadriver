@@ -13,7 +13,7 @@
 
 /* This file implements the SPI functions required by decadriver */
 
-LOG_MODULE_REGISTER(dw3000_spi);
+LOG_MODULE_DECLARE(dw3000, CONFIG_DW3000_LOG_LEVEL);
 
 #define TX_WAIT_RESP_NRF52840_DELAY 30
 

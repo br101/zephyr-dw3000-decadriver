@@ -3,3 +3,7 @@ menuconfig DW3000
 	depends on SPI
 	help
 		Qorvo/Decawave DW3000 driver
+
+module = DW3000
+module-str = dw3000
+source "subsys/logging/Kconfig.template.log_config"
