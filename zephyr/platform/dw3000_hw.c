@@ -69,17 +69,16 @@ static void dw3000_hw_isr_work_handler(struct k_work* item)
 }
 
 static void dw3000_hw_isr(const struct device* dev, struct gpio_callback* cb,
-					   uint32_t pins)
+						  uint32_t pins)
 {
 	k_work_submit(&dw3000_isr_work);
 }
 
 int dw3000_hw_init_interrupt(void)
 {
-	k_work_init(&dw3000_isr_work, dw3000_hw_isr_work_handler);
-
-	/* Interrupt */
 	if (conf.gpio_irq.port) {
+		k_work_init(&dw3000_isr_work, dw3000_hw_isr_work_handler);
+
 		gpio_pin_configure_dt(&conf.gpio_irq, GPIO_INPUT);
 		gpio_init_callback(&gpio_cb, dw3000_hw_isr, BIT(conf.gpio_irq.pin));
 		gpio_add_callback(conf.gpio_irq.port, &gpio_cb);
@@ -89,7 +88,22 @@ int dw3000_hw_init_interrupt(void)
 				conf.gpio_irq.pin);
 		return 0;
 	} else {
+		LOG_ERR("IRQ pin not configured");
 		return -ENOENT;
+	}
+}
+
+void dw3000_hw_interrupt_enable(void)
+{
+	if (conf.gpio_irq.port) {
+		gpio_pin_interrupt_configure_dt(&conf.gpio_irq, GPIO_INT_EDGE_RISING);
+	}
+}
+
+void dw3000_hw_interrupt_disable(void)
+{
+	if (conf.gpio_irq.port) {
+		gpio_pin_interrupt_configure_dt(&conf.gpio_irq, GPIO_INT_DISABLE);
 	}
 }
 

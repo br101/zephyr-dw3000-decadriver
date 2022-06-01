@@ -9,13 +9,14 @@
 
 decaIrqStatus_t decamutexon(void)
 {
-	// TODO
-	return 0;
+	dw3000_hw_interrupt_disable();
+	return 1;
 }
 
 void decamutexoff(decaIrqStatus_t s)
 {
-	// TODO
+	// TODO?: s is not used
+	dw3000_hw_interrupt_enable();
 }
 
 void deca_sleep(unsigned int time_ms)

@@ -6,5 +6,7 @@ void dw3000_hw_fini(void);
 void dw3000_hw_reset(void);
 void dw3000_hw_wakeup(void);
 void dw3000_hw_wakeup_pin_low(void);
+void dw3000_hw_interrupt_enable(void);
+void dw3000_hw_interrupt_disable(void);
 
 #endif
