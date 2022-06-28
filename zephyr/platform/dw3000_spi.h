@@ -15,4 +15,7 @@ int dw3000_spi_write(uint16_t headerLength, const uint8_t* headerBuffer,
 int dw3000_spi_write_crc(uint16_t headerLength, const uint8_t* headerBuffer,
 						 uint16_t bodyLength, const uint8_t* bodyBuffer,
 						 uint8_t crc8);
+
+void dw3000_spi_dbg_output();
+
 #endif
