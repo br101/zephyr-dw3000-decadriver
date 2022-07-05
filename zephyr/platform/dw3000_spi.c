@@ -140,6 +140,20 @@ static char* spi_dbg_out_reg(bool rw, const uint8_t* headerBuffer,
 	return buf;
 }
 
+static void hexdump(const char* txt, const uint8_t* data, int len)
+{
+	char buf[4];
+	LOG_PRINTK("%s", txt);
+
+	for (size_t i = 0; i < len; i++) {
+		int res = snprintf(buf, sizeof(buf), "%02x ", data[i]);
+		if (res > 0) {
+			LOG_PRINTK("%s", buf);
+		}
+	}
+	LOG_PRINTK("\n");
+}
+
 static void spi_dbg_in(bool rw, const uint8_t* headerBuffer,
 					   uint16_t headerLength, const uint8_t* bodyBuffer,
 					   uint16_t bodyLength)
@@ -167,27 +181,21 @@ static void spi_dbg_in(bool rw, const uint8_t* headerBuffer,
 	else
 		LOG_ERR("ERR bdy len %d at #%d", bodyLength, dbgs_cnt);
 	dbgs[dbgs_cnt].bdy_len = bodyLength;
+
+#if 0
+	// Real-time SPI debug output (normally too slow)
+	char* s = spi_dbg_out_reg(dbgs[dbgs_cnt].rw, dbgs[dbgs_cnt].hdr, dbgs[dbgs_cnt].hdr_len);
+	hexdump(s, dbgs[dbgs_cnt].bdy, dbgs[dbgs_cnt].bdy_len);
+#endif
+
 	dbgs_cnt++;
 #endif
-}
-
-static void hexdump(const char* txt, const uint8_t* data, int len)
-{
-	char buf[4];
-	LOG_PRINTK("%s", txt);
-
-	for (size_t i = 0; i < len; i++) {
-		int res = snprintf(buf, sizeof(buf), "%02x ", data[i]);
-		if (res > 0) {
-			LOG_PRINTK("%s", buf);
-		}
-	}
-	LOG_PRINTK("\n");
 }
 
 void dw3000_spi_dbg_output()
 {
 #if DEBUG_SPI_TRACE
+	LOG_PRINTK("--- SPI DBG START\n");
 	for (int i = 0; i < DBGS_CNT && i < dbgs_cnt; i++) {
 		struct spi_dbg* d = &dbgs[i];
 		// hexdump("   SPI HEADER: ", d->hdr, d->hdr_len);
@@ -195,6 +203,7 @@ void dw3000_spi_dbg_output()
 		hexdump(s, d->bdy, d->bdy_len);
 	}
 	dbgs_cnt = 0;
+	LOG_PRINTK("--- SPI DBG END\n");
 #endif
 }
 
