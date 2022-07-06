@@ -1,6 +1,8 @@
 #ifndef DW3000_SPI_H
 #define DW3000_SPI_H
 
+#include <stdint.h>
+
 int dw3000_spi_init(void);
 void dw3000_spi_fini(void);
 void dw3000_spi_wakeup(void);
