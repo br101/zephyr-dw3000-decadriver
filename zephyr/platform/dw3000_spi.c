@@ -26,7 +26,7 @@ static struct spi_cs_control* cs_ctrl = SPI_CS_CONTROL_PTR_DT(DW_INST, 0);
 static struct spi_config spi_cfgs[2] = {0}; // configs for slow and fast
 static struct spi_config* spi_cfg;
 
-#define DEBUG_SPI_TRACE 1
+#define DEBUG_SPI_TRACE 0
 
 #if DEBUG_SPI_TRACE
 #define DBGS_CNT  256
@@ -98,6 +98,7 @@ void dw3000_spi_fini(void)
 	// TODO
 }
 
+#if DEBUG_SPI_TRACE
 static char* spi_dbg_out_reg(bool rw, const uint8_t* headerBuffer,
 							 uint16_t headerLength)
 {
@@ -153,6 +154,7 @@ static void hexdump(const char* txt, const uint8_t* data, int len)
 	}
 	LOG_PRINTK("\n");
 }
+#endif
 
 static void spi_dbg_in(bool rw, const uint8_t* headerBuffer,
 					   uint16_t headerLength, const uint8_t* bodyBuffer,
