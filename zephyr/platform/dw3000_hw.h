@@ -1,4 +1,5 @@
 #ifndef DW3000_HW_H
+#define DW3000_HW_H
 
 int dw3000_hw_init(void);
 int dw3000_hw_init_interrupt(void);
