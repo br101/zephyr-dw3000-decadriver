@@ -1,12 +1,17 @@
 # Zephyr Driver for Qorvo/Decawave DW3000
 
-This is a Zephyr module which implements a driver for Qorvo/Decawave DW3000.
-It contains not much more than the `decadriver/` from the DWS3000_Release_v1.1 
-(DW3000_API_C0_rev4p0) and the necessary Zephyr bindings for GPIO, SPI and DTS.
-
-The main idea is that this module contains only the minimal code to drive the 
+This is a Zephyr module which implements a driver for Qorvo/Decawave DW3000. It
+contains only the 'decadriver' from Decawave/Qorvo and the necessary Zephyr bindings 
+for GPIO, SPI and DTS. The main idea is that this module contains only the minimal code to drive the 
 DW3000, so it can be used in different projects - and keep it clean from Decawave
 example code and the port abstractions and genral mess around there.
+
+* The master branch uses the last release from Qorvo, which unfortunately is a
+binary-only library and only for NRF targets (DW3xxx_XR6.0C_24Feb2022.zip).
+
+* There is an older 'opensource' branch which contains the last open source release from 
+Qorvo (DWS3000_Release_v1.1 / DW3000_API_C0_rev4p0), but this is older and not well
+tested any more.
 
 It can be used by adding this as a zephyr module in `west.yml`, or by adding the module
 to CMakeLists.txt, e.g.:
