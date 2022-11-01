@@ -7,7 +7,7 @@
 #include <device.h>
 #include <drivers/spi.h>
 #include <logging/log.h>
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 
 #include "dw3000_spi.h"
 
@@ -52,12 +52,12 @@ int dw3000_spi_init(void)
 
 	spi_cfg = &spi_cfgs[0];
 
-	spi = device_get_binding(DT_LABEL(DW_SPI));
+	spi = DEVICE_DT_GET(DW_SPI);
 	if (!spi) {
 		LOG_ERR("DW3000 SPI binding failed");
 		return -1;
 	} else {
-		LOG_INF("DW3000 on %s (max %dMHz)", DT_LABEL(DW_SPI),
+		LOG_INF("DW3000 on %s (max %dMHz)", DT_PROP(DW_INST, label),
 				spi_cfgs[1].frequency / 1000000);
 	}
 
