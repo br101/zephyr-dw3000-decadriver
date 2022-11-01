@@ -1,7 +1,7 @@
 #include <device.h>
 #include <drivers/gpio.h>
 #include <logging/log.h>
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 
 #include "deca_device_api.h"
 #include "dw3000_hw.h"
