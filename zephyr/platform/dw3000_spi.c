@@ -4,9 +4,9 @@
  * Copyright 2021 (c) Callender-Consulting LLC.
  */
 
-#include <device.h>
-#include <drivers/spi.h>
-#include <logging/log.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/spi.h>
+#include <zephyr/logging/log.h>
 #include <zephyr/kernel.h>
 
 #include "dw3000_spi.h"
