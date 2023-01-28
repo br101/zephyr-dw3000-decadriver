@@ -10,7 +10,5 @@ endif()
 # -Wl,--whole-archive flag (keep all symbols)
 zephyr_library_import(dwtlib ${CMAKE_CURRENT_SOURCE_DIR}/lib/${DWTLIBNAME})
 
-zephyr_include_directories(inc)
-
 # the library needs a custom linker script
 zephyr_linker_sources(SECTIONS custom-sections.ld)
