@@ -133,12 +133,14 @@ void dw3000_hw_wakeup(void)
 		/* Use WAKEUP pin if available */
 		LOG_INF("WAKEUP PIN");
 		gpio_pin_set_dt(&conf.gpio_wakeup, 1);
+		k_msleep(1);
+		gpio_pin_set_dt(&conf.gpio_wakeup, 0);
+
 	} else {
 		/* Use SPI CS pin */
 		LOG_INF("WAKEUP CS");
 		dw3000_spi_wakeup();
 	}
-	k_sleep(K_MSEC(1));
 }
 
 /** set WAKEUP pin low if available */
