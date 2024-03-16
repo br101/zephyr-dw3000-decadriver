@@ -46,7 +46,7 @@ int dw3000_spi_init(void)
 	spi_cfgs[1].frequency = 8000000;
 
 	/* High SPI clock speed: increase for boards which support higher speeds */
-#if CONFIG_SOC_NRF52833 || CONFIG_SOC_NRF52840
+#if CONFIG_SOC_NRF52833 || CONFIG_SOC_NRF52840 || CONFIG_SOC_NRF5340_CPUAPP_QKAA
 #if CONFIG_SHIELD_QORVO_DWS3000
 	/* Due to the wiring of the Nordic Development Boards and the DWS3000
 	 * Arduino shield it is not possible to use more than 16MHz */
