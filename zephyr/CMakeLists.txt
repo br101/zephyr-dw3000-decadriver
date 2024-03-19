@@ -2,3 +2,5 @@
 
 add_subdirectory_ifdef(CONFIG_DW3000 dwt_uwb_driver)
 add_subdirectory_ifdef(CONFIG_DW3000 platform)
+
+zephyr_include_directories_ifdef(CONFIG_DW3000 include)

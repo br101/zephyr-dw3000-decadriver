@@ -3,7 +3,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/kernel.h>
 
-#include "deca_device_api.h"
+#include "../dwt_uwb_driver/inc/deca_device_api.h"
 #include "dw3000_hw.h"
 #include "dw3000_spi.h"
 

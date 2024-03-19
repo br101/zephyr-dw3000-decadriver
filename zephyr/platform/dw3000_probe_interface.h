@@ -13,7 +13,7 @@
 #ifndef DECA_PROBE_INTERFACE_H
 #define DECA_PROBE_INTERFACE_H
 
-#include "deca_device_api.h"
+#include "../dwt_uwb_driver/inc/deca_types.h"
 
 extern const struct dwt_probe_s dw3000_probe_interf;
 

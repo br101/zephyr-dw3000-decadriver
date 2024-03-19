@@ -1,6 +1,6 @@
 #include <zephyr/kernel.h>
 
-#include "deca_interface.h"
+#include "../dwt_uwb_driver/inc/deca_interface.h"
 
 #include "dw3000_hw.h"
 #include "dw3000_spi.h"
