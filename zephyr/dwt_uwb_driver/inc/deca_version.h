@@ -28,7 +28,7 @@
 
 #define DRIVER_NAME        "DW3XXX"
 
-#define DRIVER_VERSION_HEX 0x060007
-#define DRIVER_VERSION_STR "DW3XXX Device Driver Version 06.00.07"
+#define DRIVER_VERSION_HEX 0x060014
+#define DRIVER_VERSION_STR "DW3XXX Device Driver Version 06.00.14"
 
 #endif

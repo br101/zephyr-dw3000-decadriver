@@ -68,9 +68,10 @@ extern "C"
     typedef enum
     {
         DWT_DW3000_DEV_ID = (int)(0xDECA0302),      //!< DW3000 (non PDOA) silicon device ID
+        DWT_QM33110_DEV_ID = (int)(0xDECA0304),     //!< QM33110 (non PDOA) silicon device ID
         DWT_DW3000_PDOA_DEV_ID = (int)(0xDECA0312), //!< DW3000 (with PDOA) silicon device ID
         DWT_DW3700_PDOA_DEV_ID = (int)(0xDECA0313), //!< DW3700 (with PDOA) silicon device ID
-        DWT_QM33120_PDOA_DEV_ID = (int)(0xDECA0314)  //!< QM33120 (with PDOA) silicon device ID
+        DWT_QM33120_PDOA_DEV_ID = (int)(0xDECA0314) //!< QM33120 (with PDOA) silicon device ID
     } dw_chip_id_e;
 
 #define DELAY_20uUSec       (20) /*Delay of 20uSec(measured 24uSec)*/
