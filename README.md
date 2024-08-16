@@ -55,7 +55,7 @@ CONFIG_GPIO=y
 ```
 
 After that you can use the functions defined in `dw3000.h` and `deca_device_api.h`,
-which would usually be like: 
+which would usually be like:
 
 ```
 dw3000_hw_init();
@@ -70,7 +70,7 @@ if (ret < 0) {
 }
 ```
 
-There is a separate project which uses this driver for the Qorvo/Decawave DWS3000 
+There is a separate project which uses this driver for the Qorvo/Decawave DWS3000
 examples here: https://github.com/br101/zephyr-dw3000-examples
 
 Thanks to https://github.com/foldedtoad/dwm3000 for an earlier Zephyr version of
