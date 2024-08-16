@@ -9,7 +9,7 @@ example code, port abstractions and the general mess around there.
 * The 'master' branch uses the last release from Qorvo (DW3xxx_XR6.0C_24Feb2022.zip),
 which unfortunately is a binary-only library and only available for NRF targets.
 
-* There is an 'opensource' branch which contains the last open source release from 
+* There is an 'opensource' branch which contains the last open source release from
 Qorvo (DWS3000_Release_v1.1 / DW3000_API_C0_rev4p0), but this is older and not well
 tested any more.
 
@@ -54,9 +54,11 @@ CONFIG_GPIO=y
 ```
 
 After that you can use the functions defined in `dw3000.h` and `deca_device_api.h`,
-which would usually be like: 
+which would usually be like:
 
 ```
+#include <dw3000.h>
+...
 dw3000_hw_init();
 dw3000_hw_reset();
 dw3000_hw_init_interrupt();
@@ -69,7 +71,7 @@ if (ret < 0) {
 }
 ```
 
-There is a separate project which uses this driver for the Qorvo/Decawave DWS3000 
+There is a separate project which uses this driver for the Qorvo/Decawave DWS3000
 examples here: https://github.com/br101/zephyr-dw3000-examples
 
 Thanks to https://github.com/foldedtoad/dwm3000 for an earlier Zephyr version of
