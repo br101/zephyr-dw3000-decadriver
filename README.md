@@ -58,6 +58,8 @@ After that you can use the functions defined in `dw3000.h` and `deca_device_api.
 which would usually be like:
 
 ```
+#include <dw3000.h>
+...
 dw3000_hw_init();
 dw3000_hw_reset();
 dw3000_hw_init_interrupt();
