@@ -1,17 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 if(CONFIG_FPU)
-    if(CONFIG_SOC_SERIES_NRF53X)
-        set(DWTLIBNAME libdwt_uwb_driver-m33-hfp-6.0.7.a)
-    else()
-        set(DWTLIBNAME libdwt_uwb_driver-m4-hfp-6.0.7.a)
-    endif()
+    set(DWTLIBNAME libdwt_uwb_driver-m4-hfp-6.0.14.a)
 else()
-    if(CONFIG_SOC_SERIES_NRF53X)
-        set(DWTLIBNAME libdwt_uwb_driver-m33-sfp-6.0.7.a)
-    else()
-        set(DWTLIBNAME libdwt_uwb_driver-m4-sfp-6.0.7.a)
-    endif()
+    set(DWTLIBNAME libdwt_uwb_driver-m4-sfp-6.0.14.a)
 endif()
 
 # use zephyr_library_import in order to get it linked with the
