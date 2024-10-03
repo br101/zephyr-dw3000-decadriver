@@ -63,7 +63,7 @@ int dw3000_spi_init(void)
 		LOG_ERR("DW3000 SPI binding failed");
 		return -1;
 	} else {
-		LOG_INF("DW3000 on %s (max %dMHz)", DT_PROP(DW_INST, label),
+		LOG_INF("DW3000 (max %dMHz)",
 				spi_cfgs[1].frequency / 1000000);
 	}
 

@@ -34,7 +34,6 @@ Then you only need to add a `decawave,dw3000` compatible device to your .dts, e.
 
 	dw3000@0 {
 		compatible = "decawave,dw3000";
-		label = "DW3000";
 		spi-max-frequency = <1000000>;
 		reg = <0>;
 		reset-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;

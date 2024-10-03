@@ -10,7 +10,6 @@
 
     dws3000@0 {
         compatible = "decawave,dw3000";
-        label = "DWS3000";
         spi-max-frequency = <1000000>;
         reg = <0>;
         wakeup-gpios  = <&arduino_header 15 GPIO_ACTIVE_HIGH>; /* D9 */
