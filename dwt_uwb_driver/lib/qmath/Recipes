@@ -1,0 +1,40 @@
+# Run with `make -f Recipes`.
+#
+# You can get help with `make -f Recipes help`.
+
+all:
+	cmake --build ./build/san
+	cmake --build ./build/cov
+
+test: all
+	./build/san/test_qmath
+
+cov:
+	ninja -C ./build/cov ./test_qmath_coverage
+
+cmake:
+	cmake -S utest -B ./build/san -G Ninja -DCMAKE_BUILD_TYPE=Debug
+	cmake -S utest -B ./build/cov -G Ninja -DCMAKE_BUILD_TYPE=Debug -DENABLE_TEST_COVERAGE=ON
+
+clean:
+	test -d ./build/san && ninja -C build-san clean
+	test -d ./build/cov && ninja -C build-cov clean
+
+check: check_format check_doc
+
+check_format:
+	../../../../tools/check-format .
+
+check_doc:
+	../../../../deps/linux/linux/scripts/kernel-doc -Werror -none include/qmath.h
+
+help:
+	@echo "cmake - run cmake to create the build tree, must be done once"
+	@echo "all   - build program"
+	@echo "test  - build and run tests"
+	@echo "cov   - build and run tests with coverage analysis"
+	@echo "clean - remove generated files"
+	@echo ""
+	@echo "check_format - run clang-format"
+	@echo "check_doc    - run kernel-doc"
+	@echo "check        - run all checks"

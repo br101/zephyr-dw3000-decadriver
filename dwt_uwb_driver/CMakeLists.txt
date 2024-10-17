@@ -1,16 +1,34 @@
-# SPDX-License-Identifier: Apache-2.0
+#
+# SPDX-FileCopyrightText: Copyright (c) 2024 Qorvo US, Inc.
+# SPDX-License-Identifier: LicenseRef-QORVO-2
+#
+cmake_minimum_required(VERSION 3.13.1)
 
-if(CONFIG_FPU)
-    set(DWTLIBNAME libdwt_uwb_driver-m4-hfp-6.0.14.a)
-else()
-    set(DWTLIBNAME libdwt_uwb_driver-m4-sfp-6.0.14.a)
+project(dw3xxx)
+
+add_library(uwb_driver_itf INTERFACE)
+target_include_directories(uwb_driver_itf INTERFACE .)
+
+add_library(uwb_driver STATIC
+                deca_interface.c
+                deca_compat.c
+                deca_rsl.c)
+
+target_link_libraries(uwb_driver 
+    PUBLIC uwb_driver_itf
+)
+
+if(DWT_DW3000)
+    message("Building drivers for DW3000 devices")
+    add_subdirectory(dw3000)
+    target_link_libraries(uwb_driver PRIVATE dw3000_uwb_driver)
 endif()
 
-# use zephyr_library_import in order to get it linked with the
-# -Wl,--whole-archive flag (keep all symbols)
-zephyr_library_import(dwtlib ${CMAKE_CURRENT_SOURCE_DIR}/lib/${DWTLIBNAME})
+if(DWT_DW3720)
+    message("Building drivers for DW3720 devices")
+    add_subdirectory(dw3720)
+    target_link_libraries(uwb_driver PRIVATE dw3720_uwb_driver)
+endif()
 
-zephyr_include_directories(inc)
-
-# the library needs a custom linker script
-zephyr_linker_sources(SECTIONS custom-sections.ld)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/qmath)
+target_link_libraries(uwb_driver PRIVATE qmath)
