@@ -27,10 +27,11 @@ Then you only need to add a `decawave,dw3000` compatible device to your .dts, e.
 &spi0 {
 	status = "okay";
 	compatible = "nordic,nrf-spim";
-	sck-pin = <2>;
-	mosi-pin = <20>;
-	miso-pin = <3>;
 	cs-gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
+
+	pinctrl-0 = <&spi0_default>;
+	pinctrl-1 = <&spi0_sleep>;
+	pinctrl-names = "default", "sleep";
 
 	dw3000@0 {
 		compatible = "decawave,dw3000";
@@ -41,6 +42,25 @@ Then you only need to add a `decawave,dw3000` compatible device to your .dts, e.
 		wakeup-gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
 		//spi-pol-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
 		//spi-pha-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
+	};
+};
+
+&pinctrl {
+	spi0_default: spi0_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 0, 28)>,
+				<NRF_PSEL(SPIM_MOSI, 0, 31)>,
+				<NRF_PSEL(SPIM_MISO, 0, 3)>;
+		};
+	};
+
+	spi0_sleep: spi0_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 0, 28)>,
+				<NRF_PSEL(SPIM_MOSI, 0, 31)>,
+				<NRF_PSEL(SPIM_MISO, 0, 3)>;
+			low-power-enable;
+		};
 	};
 };
 ```
