@@ -1,8 +1,18 @@
 menuconfig DW3000
-	bool "DW3000"
+	bool "DW3000 Driver"
 	depends on SPI
 	help
 		Qorvo/Decawave DW3000 driver
+
+	choice
+		prompt "Select  Chip"
+		depends on DW3000
+
+		config DW3000_CHIP_DW3000
+			bool "DW3000"
+		config DW3000_CHIP_DW3720
+			bool "DW3720/QM33xx"
+	endchoice
 
 module = DW3000
 module-str = dw3000
