@@ -6,7 +6,6 @@ zephyr_library()
 
 zephyr_library_sources_ifdef(CONFIG_DW3000
     dwt_uwb_driver/deca_interface.c
-    dwt_uwb_driver/deca_compat.c
     dwt_uwb_driver/deca_rsl.c
     dwt_uwb_driver/lib/qmath/src/qmath.c
 )

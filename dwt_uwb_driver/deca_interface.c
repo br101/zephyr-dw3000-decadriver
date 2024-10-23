@@ -14,6 +14,7 @@
 #include "deca_interface.h"
 #include "deca_device_api.h"
 #include <stdbool.h>
+#include "deca_ull.h"
 
 #ifndef AUTO_DW3300Q_DRIVER
 /**
@@ -28,28 +29,26 @@
  */
 static inline int32_t coex_gpio(struct dwchip_s *dw, int32_t state, int32_t delay_us)
 {
-    const struct dwt_mcps_ops_s *ops = dw->dwt_driver->dwt_mcps_ops;
     uint16_t val;
-    int32_t retVal;
 
     if (delay_us != 0)
     {
         deca_usleep((uint32_t)delay_us);
     }
 
-    (void)ops->ioctl(dw, DWT_READGPIOVALUE, 0, &val);
+    val = ull_readgpiovalue(dw);
     if (state == dw->coex_gpio_active_state)
     {
         val |= ((uint16_t)1U << (uint16_t)dw->coex_gpio_pin);
-        retVal = ops->ioctl(dw, DWT_SETGPIOVALUE, 0, &val);
+        ull_setgpiovalue(dw, 0, val);
     }
     else
     {
         val &= ~((uint16_t)1U << (uint16_t)dw->coex_gpio_pin);
-        retVal =  ops->ioctl(dw, DWT_SETGPIOVALUE, 0, &val);
+        ull_setgpiovalue(dw, 0, val);
     }
 
-    return retVal;
+    return 0;
 }
 
 /**
@@ -66,12 +65,11 @@ static inline int32_t coex_start(struct dwchip_s *dw, int32_t *trx_delayed, uint
     uint8_t buf[4];
     int32_t delay_us, ret = 0;
 
-    const struct dwt_mcps_ops_s *ops = dw->dwt_driver->dwt_mcps_ops;
-
     if (dw->coex_gpio_pin >= 0)
     {
         /* Read current DTU time to compare with next transfer time */
-        ret = ops->ioctl(dw, DWT_READSYSTIME, 0, &buf);
+        ull_readsystime(dw, buf);
+        ret = 0;
         if (ret == 0)
         {
             cur_time_dtu = (((uint32_t)buf[3] << 24UL) | ((uint32_t)buf[2] << 16UL) | ((uint32_t)buf[1] << 8UL) | (uint32_t)buf[0]);
@@ -128,15 +126,12 @@ static inline int32_t coex_stop(struct dwchip_s *dw)
 
 int32_t interface_tx_frame(struct dwchip_s *dw, uint8_t *data, size_t len, struct dw_tx_frame_info_s *info)
 {
-    const struct dwt_mcps_ops_s *ops = dw->dwt_driver->dwt_mcps_ops;
-
     if (len != 0UL)
     {
-        struct dwt_rw_data_s wr = { data, (uint16_t)len, 0U };
-        (void)ops->ioctl(dw, DWT_WRITETXDATA, 0, (void *)&wr);
+        ull_writetxdata(dw, len, data, 0);
 
-        struct dwt_tx_fctrl_s txfctrl = { (uint16_t)len, 0U, (((info->flag & MCPS_RANGING_BIT) != 0U) ? 1U : 0U) };
-        (void)ops->ioctl(dw, DWT_WRITETXFCTRL, 0, (void *)&txfctrl); // Ranging bit shall not be set for non-ranging frames
+        // Ranging bit shall not be set for non-ranging frames
+        ull_writetxfctrl(dw, len, 0, (((info->flag & MCPS_RANGING_BIT) != 0U) ? 1U : 0U));
     }
 
     struct dwt_enable_auto_ack_s ack = {
@@ -146,48 +141,46 @@ int32_t interface_tx_frame(struct dwchip_s *dw, uint8_t *data, size_t len, struc
 
     if (ack.enable != 0)
     {
-        (void)ops->ioctl(dw, DWT_ENABLEAUTOACK, 0, (void *)&ack);
+        ull_enableautoack(dw, ack.responseDelayTime, ack.enable);
     }
 
     // Setup for delayed Transmit time (units are 4ns)
     if ((info->flag & ((uint32_t)DWT_START_TX_DELAYED | (uint32_t)DWT_START_TX_DLY_REF |
                        (uint32_t)DWT_START_TX_DLY_RS | (uint32_t)DWT_START_TX_DLY_TS)) != 0UL)
     {
-        (void)ops->ioctl(dw, DWT_SETDELAYEDTRXTIME, 0, (void *)&info->tx_date_dtu);
+        ull_setdelayedtrxtime(dw, info->tx_date_dtu);
     }
 
     // Setup for delayed Receive after Tx (units are sy = 1.0256 us)
     if (info->rx_delay_dly >= 0)
     {
-        (void)ops->ioctl(dw, DWT_SETRXAFTERTXDELAY, 0, (void *)&info->rx_delay_dly);
-        (void)ops->ioctl(dw, DWT_SETRXTIMEOUT, 0, (void *)&info->rx_timeout_pac);
+        ull_setrxaftertxdelay(dw, info->rx_delay_dly);
+        ull_setrxtimeout(dw, info->rx_timeout_pac);
     }
 
-    return ops->ioctl(dw, DWT_STARTTX, 0, (void *)&info->flag);
+    return ull_starttx(dw, (int32_t)info->flag);
 }
 
 uint64_t interface_get_timestamp(struct dwchip_s *dw)
 {
     uint64_t ts = 0ULL;
-    const struct dwt_mcps_ops_s *ops = dw->dwt_driver->dwt_mcps_ops;
-    (void)ops->ioctl(dw, DWT_READRXTIMESTAMP, 0, (void *)&ts);
+    ull_readrxtimestamp(dw, (uint8_t *)&ts);
     return ts;
 }
 
 int32_t interface_rx_disable(struct dwchip_s *dw)
 {
-    const struct dwt_mcps_ops_s *ops = dw->dwt_driver->dwt_mcps_ops;
-    return ops->ioctl(dw, DWT_FORCETRXOFF, 0, NULL);
+    ull_forcetrxoff(dw);
+    return DWT_SUCCESS;
 }
 
 int32_t interface_rx_enable(struct dwchip_s *dw, struct dw_rx_frame_info_s *info)
 {
-    const struct dwt_mcps_ops_s *ops = dw->dwt_driver->dwt_mcps_ops;
     int32_t rx_delayed = info->rx_delayed;
     uint32_t date_dtu = info->rx_date_dtu;
     uint32_t timeout_pac = info->rx_timeout_pac;
-    int32_t error = ops->ioctl(dw, DWT_SETPREAMBLEDETECTTIMEOUT, 0, (void *)&timeout_pac);
-
+    ull_setpreambledetecttimeout(dw, timeout_pac);
+    int32_t error = 0;
     if (error == 0)
     {
 #ifndef AUTO_DW3300Q_DRIVER
@@ -197,7 +190,7 @@ int32_t interface_rx_enable(struct dwchip_s *dw, struct dw_rx_frame_info_s *info
 #endif
         if (rx_delayed == 0)
         {
-            error = ops->ioctl(dw, DWT_RXENABLE, (int32_t)DWT_START_RX_IMMEDIATE, NULL);
+            error = ull_rxenable(dw, DWT_START_RX_IMMEDIATE);
 #ifndef AUTO_DW3300Q_DRIVER
             if (error != 0)
             {
@@ -207,11 +200,12 @@ int32_t interface_rx_enable(struct dwchip_s *dw, struct dw_rx_frame_info_s *info
         }
         else
         {
-            error = ops->ioctl(dw, DWT_SETDELAYEDTRXTIME, 0, (void *)&date_dtu);
+            ull_setdelayedtrxtime(dw, date_dtu);
+            error = 0;
             if (error == 0)
             {
                 uint32_t rx_delayed_mask = ((uint32_t)DWT_START_RX_DELAYED | (uint32_t)DWT_IDLE_ON_DLY_ERR);
-                error = ops->ioctl(dw, DWT_RXENABLE, (int32_t)rx_delayed_mask, NULL);
+                error = ull_rxenable(dw, rx_delayed_mask);
             }
 #ifndef AUTO_DW3300Q_DRIVER
             else
@@ -227,8 +221,5 @@ int32_t interface_rx_enable(struct dwchip_s *dw, struct dw_rx_frame_info_s *info
 
 void interface_read_rx_frame(struct dwchip_s *dw, uint8_t *ptr, size_t len)
 {
-    struct dwt_rw_data_s tmp = { .buffer = ptr, .length = (uint16_t)len, .offset = 0U };
-
-    (void)dw->dwt_driver->dwt_mcps_ops->ioctl(dw, DWT_READRXDATA, 0, &tmp);
-    return;
+    ull_readrxdata(dw, ptr, len, 0);
 }

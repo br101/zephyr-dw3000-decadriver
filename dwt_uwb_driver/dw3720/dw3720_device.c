@@ -337,32 +337,32 @@ static const uint16_t dwt_cir_acc_offset[NUM_OF_DWT_ACC_IDX] = { 0x0U, 0x400U, 0
 // -------------------------------------------------------------------------------------------------------------------
 // Internal functions prototypes for controlling and configuring the device
 //
-static uint32_t dwt_read32bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t regOffset);
+uint32_t dwt_read32bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t regOffset);
 static uint8_t dwt_read8bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t regOffset);
 static void dwt_write8bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t regOffset, uint8_t regval);
 static uint32_t dwt_otpreadpintoparams(dwchip_t *dw, uint16_t address);
 static void dwt_otpprogword32(dwchip_t *dw, uint32_t data, uint16_t address);
 static void ull_force_clocks(dwchip_t *dw, int32_t clocks);
-static uint8_t ull_calcbandwidthadj(dwchip_t *dw, uint16_t target_count);
-static int32_t ull_run_pgfcal(dwchip_t *dw);
+uint8_t ull_calcbandwidthadj(dwchip_t *dw, uint16_t target_count);
+int32_t ull_run_pgfcal(dwchip_t *dw);
 static int32_t ull_pgf_cal(dwchip_t *dw, int32_t ldoen);
 static uint8_t calc_new_th(uint8_t th, uint32_t iq_n, int16_t dec_step);
 static int32_t check_updated_th(uint32_t iq_, uint32_t iq_p, int16_t *best_diff);
-static void ull_setplenfine(dwchip_t *dw, uint8_t preambleLength);
-static uint16_t ull_getframelength(dwchip_t *dw, uint8_t *rng_bit);
-static int32_t ull_check_dev_id(dwchip_t *dw);
+void ull_setplenfine(dwchip_t *dw, uint8_t preambleLength);
+uint16_t ull_getframelength(dwchip_t *dw, uint8_t *rng_bit);
+int32_t ull_check_dev_id(dwchip_t *dw);
 static int32_t ull_adcoffsetscalibration(dwchip_t *dw);
 static void ull_enable_disable_eq(dwchip_t *dw, uint8_t en);
 static void ull_enable_rftx_blocks(dwchip_t *dw);
 static void ull_disable_rftx_blocks(dwchip_t *dw);
 static int32_t ull_setchannel(dwchip_t *dw, uint8_t ch);
-static void ull_dis_otp_ips(dwchip_t *dw, int mode);
-static void ull_setrxtimeout(dwchip_t *dw, uint32_t on_time);
-static void ull_setpreambledetecttimeout(dwchip_t *dw, uint16_t timeout);
+void ull_dis_otp_ips(dwchip_t *dw, int mode);
+void ull_setrxtimeout(dwchip_t *dw, uint32_t on_time);
+void ull_setpreambledetecttimeout(dwchip_t *dw, uint16_t timeout);
 static void ull_aon_write(dwchip_t *dw, uint16_t aon_address, uint8_t aon_write_data);
 static uint8_t ull_aon_read(dwchip_t *dw, uint16_t aon_address);
-static float ull_convertrawtemperature(dwchip_t *dw, uint8_t raw_temp);
-static uint16_t ull_readtempvbat(dwchip_t *dw);
+float ull_convertrawtemperature(dwchip_t *dw, uint8_t raw_temp);
+uint16_t ull_readtempvbat(dwchip_t *dw);
 static uint16_t ull_readsar(dwchip_t *dw, uint8_t input_mux, uint8_t attn);
 static uint8_t ull_pll_ch5_auto_cal(dwchip_t *dw, uint32_t coarse_code, uint16_t sleep_us, uint8_t steps, uint8_t *p_num_steps_lock, int8_t temperature);
 static uint8_t ull_pll_ch9_auto_cal(dwchip_t *dw, uint32_t coarse_code, uint16_t sleep_us, uint8_t steps, uint8_t *p_num_steps_lock);
@@ -370,7 +370,7 @@ static void ull_capture_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc
 static void ull_read_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc);
 static void ull_enable_rf_rx(dwchip_t *dw, uint8_t rx_ab);
 static void ull_disable_rf_rx(dwchip_t *dw);
-static void ull_forcetrxoff(dwchip_t *dw);
+void ull_forcetrxoff(dwchip_t *dw);
 static void ull_timers_reset(dwchip_t *dw);
 static void ull_update_ststhreshold(dwchip_t *dw, uint8_t rx_pcode, uint8_t stsBlocks);
 static void ull_setstslength_s(dwchip_t *dw, uint8_t sts_len);
@@ -622,7 +622,7 @@ static void dwt_read_write_fast_cmd_from_device(dwchip_t *dw, uint32_t regFileID
  *
  * @returns 32 bit register value
  */
-static uint32_t dwt_read32bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t regOffset)
+uint32_t dwt_read32bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t regOffset)
 {
     int32_t j;
     uint32_t regval = 0UL;
@@ -697,7 +697,7 @@ static uint8_t dwt_read8bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t 
  *
  * no return value
  */
-static void dwt_write32bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t regOffset, uint32_t regval)
+void dwt_write32bitoffsetreg(dwchip_t *dw, uint32_t regFileID, uint16_t regOffset, uint32_t regval)
 {
     int32_t j;
     uint8_t buffer[4];
@@ -834,7 +834,7 @@ static void dwt_modify8bitoffsetreg(dwchip_t *dw, const uint32_t regFileID, cons
  *
  * no return value
  */
-static void ull_enablespicrccheck(dwchip_t *dw, dwt_spi_crc_mode_e crc_mode, dwt_spierrcb_t spireaderr_cb)
+void ull_enablespicrccheck(dwchip_t *dw, dwt_spi_crc_mode_e crc_mode, dwt_spierrcb_t spireaderr_cb)
 {
     // enable CRC check in DW3000
     if (crc_mode != DWT_SPI_CRC_MODE_NO)
@@ -1123,7 +1123,7 @@ static int is_pll_locked(dwchip_t *dw) {
  *
  * returns DWT_SUCCESS for success, or DWT_ERROR for error
  */
-static int ull_setdwstate(dwchip_t *dw, int32_t state)
+int ull_setdwstate(dwchip_t *dw, int32_t state)
 {
     int ret = (int)DWT_SUCCESS;
     // Set the auto INIT2IDLE bit so that DW3720 enters IDLE mode before switching clocks to system_PLL
@@ -1168,7 +1168,7 @@ static int ull_setdwstate(dwchip_t *dw, int32_t state)
  *
  * no return value
  */
-static void ull_enablegpioclocks(dwchip_t *dw)
+void ull_enablegpioclocks(dwchip_t *dw)
 {
     dwt_or32bitoffsetreg(dw, CLK_CTRL_ID, 0U, CLK_CTRL_GPIO_CLK_EN_BIT_MASK);
 }
@@ -1185,7 +1185,7 @@ static void ull_enablegpioclocks(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_setgpiomode(dwchip_t *dw, uint32_t gpio_mask, uint32_t gpio_modes)
+void ull_setgpiomode(dwchip_t *dw, uint32_t gpio_mask, uint32_t gpio_modes)
 {
     uint32_t mask = 0UL;
     for (uint32_t i= 0UL; i <= 8UL; i++)
@@ -1211,7 +1211,7 @@ static void ull_setgpiomode(dwchip_t *dw, uint32_t gpio_mask, uint32_t gpio_mode
  *
  * no return value
  */
-static void ull_setgpiodir(dwchip_t *dw, uint16_t in_out)
+void ull_setgpiodir(dwchip_t *dw, uint16_t in_out)
 {
     /*Set GPIOs direction*/
     dwt_write16bitoffsetreg(dw, GPIO_DIR_ID, 0U, in_out);
@@ -1229,7 +1229,7 @@ static void ull_setgpiodir(dwchip_t *dw, uint16_t in_out)
  *
  * no return value
  */
-static void ull_setgpiovalue(dwchip_t *dw, uint16_t gpio, int32_t value)
+void ull_setgpiovalue(dwchip_t *dw, uint16_t gpio, int32_t value)
 {
     /* Set output level for output pin to high. */
     if (value == 1)
@@ -1252,7 +1252,7 @@ static void ull_setgpiovalue(dwchip_t *dw, uint16_t gpio, int32_t value)
  *
  * @returns a uint16_t value that holds the value read on the GPIO pins.
  */
-static uint16_t ull_readgpiovalue(dwchip_t *dw)
+uint16_t ull_readgpiovalue(dwchip_t *dw)
 {
     return dwt_read16bitoffsetreg(dw, GPIO_RAW_ID, 0);
 }
@@ -1273,7 +1273,7 @@ static uint16_t ull_readgpiovalue(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_setlnapamode(dwchip_t *dw, int32_t lna_pa)
+void ull_setlnapamode(dwchip_t *dw, int32_t lna_pa)
 {
     uint32_t gpio_mode = dwt_read32bitreg(dw, GPIO_MODE_ID);
 
@@ -1325,7 +1325,7 @@ static uint8_t ull_otprevision(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_setpllcaltemperature(dwchip_t *dw, int8_t temperature)
+void ull_setpllcaltemperature(dwchip_t *dw, int8_t temperature)
 {
 	LOCAL_DATA(dw)->temperature = temperature;
 }
@@ -1339,7 +1339,7 @@ static void ull_setpllcaltemperature(dwchip_t *dw, int8_t temperature)
  *
  * returns the temperature in celcius that will be used by PLL calibrations
  */
-static int8_t ull_getpllcaltemperature(dwchip_t *dw)
+int8_t ull_getpllcaltemperature(dwchip_t *dw)
 {
     return LOCAL_DATA(dw)->temperature;
 }
@@ -1354,7 +1354,7 @@ static int8_t ull_getpllcaltemperature(dwchip_t *dw)
  *
  * returns uint8_t
  */
-static uint8_t ull_readpgdelay(dwchip_t *dw)
+uint8_t ull_readpgdelay(dwchip_t *dw)
 {
     return dwt_read8bitoffsetreg(dw, TX_CTRL_HI_ID, 0U);
 }
@@ -1371,7 +1371,7 @@ static uint8_t ull_readpgdelay(dwchip_t *dw)
  *
  * returns the 8 bit V bat value as programmed in the factory
  */
-static uint8_t ull_geticrefvolt(dwchip_t *dw)
+uint8_t ull_geticrefvolt(dwchip_t *dw)
 {
     return LOCAL_DATA(dw)->vBatP;
 }
@@ -1388,7 +1388,7 @@ static uint8_t ull_geticrefvolt(dwchip_t *dw)
  *
  * returns the 8 bit V temp value as programmed in the factory
  */
-static uint8_t ull_geticreftemp(dwchip_t *dw)
+uint8_t ull_geticreftemp(dwchip_t *dw)
 {
     return LOCAL_DATA(dw)->tempP;
 }
@@ -1405,7 +1405,7 @@ static uint8_t ull_geticreftemp(dwchip_t *dw)
  *
  * returns the 32 bit part ID value as programmed in the factory
  */
-static uint32_t ull_getpartid(dwchip_t *dw)
+uint32_t ull_getpartid(dwchip_t *dw)
 {
     return LOCAL_DATA(dw)->partID;
 }
@@ -1422,7 +1422,7 @@ static uint32_t ull_getpartid(dwchip_t *dw)
  *
  * returns the 64 bit lot ID value as programmed in the factory
  */
-static uint64_t ull_getlotid(dwchip_t *dw)
+uint64_t ull_getlotid(dwchip_t *dw)
 {
     return LOCAL_DATA(dw)->lotID;
 }
@@ -1438,7 +1438,7 @@ static uint64_t ull_getlotid(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_setfinegraintxseq(dwchip_t *dw, int32_t enable)
+void ull_setfinegraintxseq(dwchip_t *dw, int32_t enable)
 {
     if (enable != 0)
     {
@@ -1462,7 +1462,7 @@ static void ull_setfinegraintxseq(dwchip_t *dw, int32_t enable)
  *
  * no return value
  */
-static void ull_settxpower(dwchip_t *dw, uint32_t power)
+void ull_settxpower(dwchip_t *dw, uint32_t power)
 {
     dwt_write32bitreg(dw, TX_POWER_ID, power);
 }
@@ -1512,7 +1512,7 @@ static void ull_configuretxrf(dwchip_t *dw, dwt_txconfig_t *config)
  *
  * no return value
  */
-static void ull_configurestskey(dwchip_t *dw, dwt_sts_cp_key_t *pStsKey)
+void ull_configurestskey(dwchip_t *dw, dwt_sts_cp_key_t *pStsKey)
 {
     dwt_write32bitreg(dw, STS_KEY0_ID, pStsKey->key0);
     dwt_write32bitreg(dw, STS_KEY1_ID, pStsKey->key1);
@@ -1531,7 +1531,7 @@ static void ull_configurestskey(dwchip_t *dw, dwt_sts_cp_key_t *pStsKey)
  *
  * no return value
  */
-static void ull_configurestsiv(dwchip_t *dw, dwt_sts_cp_iv_t *pStsIv)
+void ull_configurestsiv(dwchip_t *dw, dwt_sts_cp_iv_t *pStsIv)
 {
     dwt_write32bitreg(dw, STS_IV0_ID, pStsIv->iv0);
     dwt_write32bitreg(dw, STS_IV1_ID, pStsIv->iv1);
@@ -1549,7 +1549,7 @@ static void ull_configurestsiv(dwchip_t *dw, dwt_sts_cp_iv_t *pStsIv)
  *
  * no return value
  */
-static void ull_configurestsloadiv(dwchip_t *dw)
+void ull_configurestsloadiv(dwchip_t *dw)
 {
     dwt_or8bitoffsetreg(dw, STS_CTRL_ID, 0U, STS_CTRL_LOAD_IV_BIT_MASK);
 }
@@ -1595,7 +1595,7 @@ static uint16_t get_sts_mnth(uint16_t cipher, uint8_t threshold, uint8_t shift_v
  *
  * no return value
  */
-static void ull_configmrxlut(dwchip_t *dw, int32_t channel)
+void ull_configmrxlut(dwchip_t *dw, int32_t channel)
 {
     uint32_t lut0, lut1, lut2, lut3, lut4, lut5, lut6 = 0UL;
 
@@ -1642,7 +1642,7 @@ static void ull_configmrxlut(dwchip_t *dw, int32_t channel)
  *                     - If set to any other value, the function will perform the complete update.
  *
  */
-static void ull_restoreconfig(dwchip_t *dw, int32_t full_restore)
+void ull_restoreconfig(dwchip_t *dw, int32_t full_restore)
 {
     uint8_t channel = 5U;
     uint16_t chan_ctrl;
@@ -1731,7 +1731,7 @@ static void ull_configurestsmode(dwchip_t *dw, uint8_t stsMode)
  *
  * @return DWT_SUCCESS or DWT_ERROR if bad parameters.
  */
-static int32_t ull_setpdoamode(dwchip_t *dw, dwt_pdoa_mode_e pdoaMode)
+int32_t ull_setpdoamode(dwchip_t *dw, dwt_pdoa_mode_e pdoaMode)
 {
     if ((pdoaMode != DWT_PDOA_M0) && (pdoaMode != DWT_PDOA_M1) && (pdoaMode != DWT_PDOA_M3))
     {
@@ -2033,7 +2033,7 @@ static int32_t ull_configure(dwchip_t *dw, dwt_config_t *config)
  *
  * return result of PGF calibration (DWT_ERROR/-1 = error)
  */
-static int32_t ull_pgf_cal(dwchip_t *dw, int32_t ldoen)
+int32_t ull_pgf_cal(dwchip_t *dw, int32_t ldoen)
 {
     int32_t temp;
     uint16_t val;
@@ -2069,7 +2069,7 @@ static int32_t ull_pgf_cal(dwchip_t *dw, int32_t ldoen)
  *
  * return result of PGF calibration (DWT_ERROR/-1 = error)
  */
-static int32_t ull_run_pgfcal(dwchip_t *dw)
+int32_t ull_run_pgfcal(dwchip_t *dw)
 {
     int32_t result = (int32_t)DWT_SUCCESS;
     uint32_t val = 0UL;
@@ -2416,7 +2416,7 @@ static int32_t ull_adcoffsetscalibration(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_setrxantennadelay(dwchip_t *dw, uint16_t rxDelay)
+void ull_setrxantennadelay(dwchip_t *dw, uint16_t rxDelay)
 {
     // Set the RX antenna delay for auto TX timestamp adjustment
     dwt_write16bitoffsetreg(dw, CIA_CONF_ID, 0U, rxDelay);
@@ -2432,7 +2432,7 @@ static void ull_setrxantennadelay(dwchip_t *dw, uint16_t rxDelay)
  *
  * returns 16-bit RX antenna delay value which is currently programmed in CIA_CONF_ID register
  */
-static uint16_t ull_getrxantennadelay(dwchip_t* dw)
+uint16_t ull_getrxantennadelay(dwchip_t* dw)
 {
     // Get the RX antenna delay used for auto RX timestamp adjustment
     return dwt_read16bitoffsetreg(dw, CIA_CONF_ID, 0U);
@@ -2450,7 +2450,7 @@ static uint16_t ull_getrxantennadelay(dwchip_t* dw)
  *
  * no return value
  */
-static void ull_settxantennadelay(dwchip_t *dw, uint16_t txDelay)
+void ull_settxantennadelay(dwchip_t *dw, uint16_t txDelay)
 {
     // Set the TX antenna delay for auto TX timestamp adjustment
     dwt_write16bitoffsetreg(dw, TX_ANTD_ID, 0U, txDelay);
@@ -2466,7 +2466,7 @@ static void ull_settxantennadelay(dwchip_t *dw, uint16_t txDelay)
  *
  * returns 16-bit TX antenna delay value which is currently programmed in TX_ANTD_ID register
  */
-static uint16_t ull_gettxantennadelay(dwchip_t* dw)
+uint16_t ull_gettxantennadelay(dwchip_t* dw)
 {
     // Get the TX antenna delay used for auto TX timestamp adjustment
     return dwt_read16bitoffsetreg(dw, TX_ANTD_ID, 0U);
@@ -2492,7 +2492,7 @@ static uint16_t ull_gettxantennadelay(dwchip_t* dw)
  *
  * returns DWT_SUCCESS for success, or DWT_ERROR for error
  */
-static int32_t ull_writetxdata(dwchip_t *dw, uint16_t txDataLength, uint8_t *txDataBytes, uint16_t txBufferOffset)
+int32_t ull_writetxdata(dwchip_t *dw, uint16_t txDataLength, uint8_t *txDataBytes, uint16_t txBufferOffset)
 {
 #ifdef DWT_API_ERROR_CHECK
     assert((LOCAL_DATA(dw)->longFrames && (txDataLength <= EXT_FRAME_LEN)) || (txDataLength <= STD_FRAME_LEN));
@@ -2539,7 +2539,7 @@ static int32_t ull_writetxdata(dwchip_t *dw, uint16_t txDataLength, uint8_t *txD
  *
  * no return value
  */
-static void ull_writetxfctrl(dwchip_t *dw, uint16_t txFrameLength, uint16_t txBufferOffset, uint8_t ranging)
+void ull_writetxfctrl(dwchip_t *dw, uint16_t txFrameLength, uint16_t txBufferOffset, uint8_t ranging)
 {
     uint32_t reg32;
 #ifdef DWT_API_ERROR_CHECK
@@ -2582,7 +2582,7 @@ static void ull_writetxfctrl(dwchip_t *dw, uint16_t txFrameLength, uint16_t txBu
  *
  * no return value
  */
-static void ull_setplenfine(dwchip_t *dw, uint8_t preambleLength)
+void ull_setplenfine(dwchip_t *dw, uint8_t preambleLength)
 {
     dwt_write8bitoffsetreg(dw, TX_FCTRL_HI_ID, 1U, preambleLength);
 }
@@ -2600,7 +2600,7 @@ static void ull_setplenfine(dwchip_t *dw, uint8_t preambleLength)
  *
  * no return value
  */
-static void ull_write_rx_scratch_data(dwchip_t *dw, uint8_t *buffer, uint16_t length, uint16_t bufferOffset)
+void ull_write_rx_scratch_data(dwchip_t *dw, uint8_t *buffer, uint16_t length, uint16_t bufferOffset)
 {
     //!!Check later if needs range protection.
 
@@ -2621,7 +2621,7 @@ static void ull_write_rx_scratch_data(dwchip_t *dw, uint8_t *buffer, uint16_t le
  *
  * no return value
  */
-static void ull_read_rx_scratch_data(dwchip_t *dw, uint8_t *buffer, uint16_t length, uint16_t rxBufferOffset)
+void ull_read_rx_scratch_data(dwchip_t *dw, uint8_t *buffer, uint16_t length, uint16_t rxBufferOffset)
 {
     //!!Check later if needs range protection.
 
@@ -2642,7 +2642,7 @@ static void ull_read_rx_scratch_data(dwchip_t *dw, uint8_t *buffer, uint16_t len
  *
  * no return value
  */
-static void ull_readrxdata(dwchip_t *dw, uint8_t *buffer, uint16_t length, uint16_t rxBufferOffset)
+void ull_readrxdata(dwchip_t *dw, uint8_t *buffer, uint16_t length, uint16_t rxBufferOffset)
 {
     uint32_t rx_buff_addr;
 
@@ -2906,7 +2906,7 @@ static void ull_readcir(dwchip_t *dw, uint32_t *buffer, dwt_acc_idx_e cir_idx, u
  * return value - the (int12) signed offset value. (s[-15:-26])
  *                A positive value means the local (RX) clock is running slower than that of the remote (TX) device.
  */
-static int16_t ull_readclockoffset(dwchip_t *dw)
+int16_t ull_readclockoffset(dwchip_t *dw)
 {
     uint16_t regval;
 
@@ -2947,7 +2947,7 @@ static int16_t ull_readclockoffset(dwchip_t *dw)
  * return value - the (int32_t) signed carrier integrator value.
  *                A positive value means the local (RX) clock is running slower than that of the remote (TX) device.
  */
-static int32_t ull_readcarrierintegrator(dwchip_t *dw)
+int32_t ull_readcarrierintegrator(dwchip_t *dw)
 {
     uint32_t regval = 0UL;
 
@@ -2984,7 +2984,7 @@ static int32_t ull_readcarrierintegrator(dwchip_t *dw)
  * Note: For the 64 MHz PRF if value is >= 90% of the STS length then we can assume good STS reception.
  *       Otherwise the STS timestamp may not be accurate.
  */
-static int32_t ull_readstsquality(dwchip_t *dw, int16_t *rxStsQualityIndex)
+int32_t ull_readstsquality(dwchip_t *dw, int16_t *rxStsQualityIndex)
 {
     uint16_t preambleCount;
 
@@ -3014,7 +3014,7 @@ static int32_t ull_readstsquality(dwchip_t *dw, int16_t *rxStsQualityIndex)
  * output parameters
  * @return DWT_SUCCESS for good/valid STS status, DWT_ERROR if STS status is bad.
  */
-static int32_t ull_readstsstatus(dwchip_t *dw, uint16_t *stsStatus, int32_t sts_num)
+int32_t ull_readstsstatus(dwchip_t *dw, uint16_t *stsStatus, int32_t sts_num)
 {
     int32_t ret = (int32_t)DWT_SUCCESS;
     uint32_t stsStatusRegAdd = (sts_num == 1) ? (uint32_t)BUF0_STS1_STAT : (uint32_t)BUF0_STS_STAT;
@@ -3055,7 +3055,7 @@ static int32_t ull_readstsstatus(dwchip_t *dw, uint16_t *stsStatus, int32_t sts_
  *
  * no return value
  */
-static void ull_readdiagnostics(dwchip_t *dw, dwt_rxdiag_t *diagnostics)
+void ull_readdiagnostics(dwchip_t *dw, dwt_rxdiag_t *diagnostics)
 {
     uint16_t xtal_offset_calc, pdoa_calc;
     uint32_t offset_0xd = STS_DIAG_3_LEN + STS_DIAG_3_ID - IP_TOA_LO_ID; // there are 0x6C bytes in 0xC0000 base before we enter 0xD0000
@@ -3483,7 +3483,7 @@ static void ull_readdiagnostics(dwchip_t *dw, dwt_rxdiag_t *diagnostics)
  *
  * @return DWT_SUCCESS or DWT_ERROR if the passed parameters were wrong.
  */
-static int ull_readdiagnostics_acc(dwchip_t *dw, dwt_cirdiags_t *cir_diag, dwt_acc_idx_e acc_idx)
+int ull_readdiagnostics_acc(dwchip_t *dw, dwt_cirdiags_t *cir_diag, dwt_acc_idx_e acc_idx)
 {
     uint8_t temp[DB_MAX_DIAG_SIZE];
     uint32_t offset_0xd = STS_DIAG_3_LEN + STS_DIAG_3_ID - IP_TOA_LO_ID; // there are 0x6C bytes in 0xC0000 base before we enter 0xD0000
@@ -3665,7 +3665,7 @@ static int ull_readdiagnostics_acc(dwchip_t *dw, dwt_cirdiags_t *cir_diag, dwt_a
  *
  * no return value
  */
-static uint8_t ull_get_dgcdecision(dwchip_t *dw)
+uint8_t ull_get_dgcdecision(dwchip_t *dw)
 {
     return ((dwt_read8bitoffsetreg(dw, DGC_DBG_ID, 3U) & 0x70U) >> 4U);
 }
@@ -3681,7 +3681,7 @@ static uint8_t ull_get_dgcdecision(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_readtxtimestamp(dwchip_t *dw, uint8_t *timestamp)
+void ull_readtxtimestamp(dwchip_t *dw, uint8_t *timestamp)
 {
     ull_readfromdevice(dw, TX_TIME_LO_ID, 0U, TX_TIME_TX_STAMP_LEN, timestamp); // Read bytes directly into buffer
 }
@@ -3696,7 +3696,7 @@ static void ull_readtxtimestamp(dwchip_t *dw, uint8_t *timestamp)
  *
  * @returns high 32-bits of TX timestamp
  */
-static uint32_t ull_readtxtimestamphi32(dwchip_t *dw)
+uint32_t ull_readtxtimestamphi32(dwchip_t *dw)
 {
     return dwt_read32bitoffsetreg(dw, TX_TIME_LO_ID, 1U); // Offset is 1 to get the 4 upper bytes out of 5
 }
@@ -3711,7 +3711,7 @@ static uint32_t ull_readtxtimestamphi32(dwchip_t *dw)
  *
  * @returns low 32-bits of TX timestamp
  */
-static uint32_t ull_readtxtimestamplo32(dwchip_t *dw)
+uint32_t ull_readtxtimestamplo32(dwchip_t *dw)
 {
     return dwt_read32bitreg(dw, TX_TIME_LO_ID); // Read TX TIME as a 32-bit register to get the 4 lower bytes out of 5
 }
@@ -3729,7 +3729,7 @@ static uint32_t ull_readtxtimestamplo32(dwchip_t *dw)
  *
  * no return value
  */
-static int16_t ull_readpdoa(dwchip_t *dw)
+int16_t ull_readpdoa(dwchip_t *dw)
 {
     uint16_t pdoa;
 
@@ -3772,7 +3772,7 @@ static int16_t ull_readpdoa(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_readtdoa(dwchip_t *dw, uint8_t *tdoa)
+void ull_readtdoa(dwchip_t *dw, uint8_t *tdoa)
 {
     // timestamp difference of the 2 cipher RX timestamps
     ull_readfromdevice(dw, CIA_TDOA_0_ID, 0U, CIA_TDOA_LEN, tdoa);
@@ -3797,7 +3797,7 @@ static void ull_readtdoa(dwchip_t *dw, uint8_t *tdoa)
  *
  * no return value
  */
-static void ull_readrxtimestamp(dwchip_t *dw, uint8_t *timestamp)
+void ull_readrxtimestamp(dwchip_t *dw, uint8_t *timestamp)
 {
     switch ((dwt_dbl_buff_conf_e)LOCAL_DATA(dw)->dblbuffon)
     // check if in double buffer mode and if so which buffer host is currently accessing
@@ -3827,7 +3827,7 @@ static void ull_readrxtimestamp(dwchip_t *dw, uint8_t *timestamp)
  *
  * no return value
  */
-static void ull_readrxtimestampunadj(dwchip_t *dw, uint8_t *timestamp)
+void ull_readrxtimestampunadj(dwchip_t *dw, uint8_t *timestamp)
 {
     timestamp[0] = 0U;
     ull_readfromdevice(dw, RX_TIME_RAW_ID, 0U, RX_TIME_RX_STAMP_LEN - 1U, &timestamp[1]);
@@ -3873,7 +3873,7 @@ static void ull_readrxtimestamp_ipatov(dwchip_t *dw, uint8_t *timestamp)
  *
  * no return value
  */
-static void ull_readrxtimestamp_sts(dwchip_t *dw, uint8_t *timestamp)
+void ull_readrxtimestamp_sts(dwchip_t *dw, uint8_t *timestamp)
 {
     switch (LOCAL_DATA(dw)->dblbuffon)
     // check if in double buffer mode and if so which buffer host is currently accessing
@@ -3901,7 +3901,7 @@ static void ull_readrxtimestamp_sts(dwchip_t *dw, uint8_t *timestamp)
  *
  * @returns high 32-bits of RX timestamp
  */
-static uint32_t ull_readrxtimestamphi32(dwchip_t *dw)
+uint32_t ull_readrxtimestamphi32(dwchip_t *dw)
 {
     return dwt_read32bitoffsetreg(dw, RX_TIME_0_ID, 1U); // Offset is 1 to get the 4 upper bytes out of 5 byte tiemstamp
 }
@@ -3916,7 +3916,7 @@ static uint32_t ull_readrxtimestamphi32(dwchip_t *dw)
  *
  * @returns low 32-bits of RX timestamp
  */
-static uint32_t ull_readrxtimestamplo32(dwchip_t *dw)
+uint32_t ull_readrxtimestamplo32(dwchip_t *dw)
 {
     return dwt_read32bitreg(dw, RX_TIME_0_ID); // Read RX TIME as a 32-bit register to get the 4 lower bytes out of 5 byte timestamp
 }
@@ -3931,7 +3931,7 @@ static uint32_t ull_readrxtimestamplo32(dwchip_t *dw)
  *
  * returns high 32-bits of system time timestamp
  */
-static uint32_t ull_readsystimehi32(dwchip_t *dw)
+uint32_t ull_readsystimehi32(dwchip_t *dw)
 {
     return dwt_read32bitreg(dw, SYS_TIME_ID);
 }
@@ -3948,7 +3948,7 @@ static uint32_t ull_readsystimehi32(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_readsystime(dwchip_t *dw, uint8_t *timestamp)
+void ull_readsystime(dwchip_t *dw, uint8_t *timestamp)
 {
     ull_readfromdevice(dw, SYS_TIME_ID, 0U, SYS_TIME_LEN, timestamp);
 }
@@ -3983,7 +3983,7 @@ static void ull_readsystime(dwchip_t *dw, uint8_t *timestamp)
  *
  * no return value
  */
-static void ull_configureframefilter(dwchip_t *dw, uint16_t enabletype, uint16_t filtermode)
+void ull_configureframefilter(dwchip_t *dw, uint16_t enabletype, uint16_t filtermode)
 {
     if (enabletype == (uint16_t)DWT_FF_ENABLE_802_15_4)
     {
@@ -4010,7 +4010,7 @@ static void ull_configureframefilter(dwchip_t *dw, uint16_t enabletype, uint16_t
  *
  * no return value
  */
-static void ull_setpanid(dwchip_t *dw, uint16_t panID)
+void ull_setpanid(dwchip_t *dw, uint16_t panID)
 {
     // PAN ID is high 16 bits of register
     dwt_write16bitoffsetreg(dw, PANADR_ID, PANADR_PAN_ID_BYTE_OFFSET, panID);
@@ -4027,7 +4027,7 @@ static void ull_setpanid(dwchip_t *dw, uint16_t panID)
  *
  * no return value
  */
-static void ull_setaddress16(dwchip_t *dw, uint16_t shortAddress)
+void ull_setaddress16(dwchip_t *dw, uint16_t shortAddress)
 {
     // Short address into low 16 bits
     dwt_write16bitoffsetreg(dw, PANADR_ID, PANADR_SHORTADDR_BIT_OFFSET, shortAddress);
@@ -4044,7 +4044,7 @@ static void ull_setaddress16(dwchip_t *dw, uint16_t shortAddress)
  *
  * no return value
  */
-static void ull_seteui(dwchip_t *dw, uint8_t *eui64)
+void ull_seteui(dwchip_t *dw, uint8_t *eui64)
 {
     ull_writetodevice(dw, EUI_64_LO_ID, 0U, 0x8U, eui64);
 }
@@ -4060,7 +4060,7 @@ static void ull_seteui(dwchip_t *dw, uint8_t *eui64)
  *
  * no return value
  */
-static void ull_geteui(dwchip_t *dw, uint8_t *eui64)
+void ull_geteui(dwchip_t *dw, uint8_t *eui64)
 {
     ull_readfromdevice(dw, EUI_64_LO_ID, 0U, 0x8U, eui64);
 }
@@ -4076,7 +4076,7 @@ static void ull_geteui(dwchip_t *dw, uint8_t *eui64)
  *
  * returns 8-bits read from given AON memory address
  */
-static uint8_t ull_aon_read(dwchip_t *dw, uint16_t aon_address)
+uint8_t ull_aon_read(dwchip_t *dw, uint16_t aon_address)
 {
     dwt_write16bitoffsetreg(dw, AON_ADDR_ID, 0x0U, aon_address); // Set short AON address for read
     dwt_write8bitoffsetreg(dw, AON_CTRL_ID, 0x0U, (AON_CTRL_DCA_ENAB_BIT_MASK | AON_CTRL_DCA_READ_EN_BIT_MASK));
@@ -4097,7 +4097,7 @@ static uint8_t ull_aon_read(dwchip_t *dw, uint16_t aon_address)
  * no return value
  *
  */
-static void ull_aon_write(dwchip_t *dw, uint16_t aon_address, uint8_t aon_write_data)
+void ull_aon_write(dwchip_t *dw, uint16_t aon_address, uint8_t aon_write_data)
 {
     uint8_t temp = 0U;
 
@@ -4124,7 +4124,7 @@ static void ull_aon_write(dwchip_t *dw, uint16_t aon_address, uint8_t aon_write_
  *
  * no return value
  */
-static void ull_otpread(dwchip_t *dw, uint16_t address, uint32_t *array, uint8_t length)
+void ull_otpread(dwchip_t *dw, uint16_t address, uint32_t *array, uint8_t length)
 {
     uint16_t i;
 
@@ -4311,7 +4311,7 @@ static void dwt_otpprogword32(dwchip_t *dw, uint32_t data, uint16_t address)
  *
  * @returns DWT_SUCCESS for success, or DWT_ERROR for error
  */
-static int32_t ull_otpwriteandverify(dwchip_t *dw, uint32_t value, uint16_t address)
+int32_t ull_otpwriteandverify(dwchip_t *dw, uint32_t value, uint16_t address)
 {
     // program the word
     dwt_otpprogword32(dw, value, address);
@@ -4339,7 +4339,7 @@ static int32_t ull_otpwriteandverify(dwchip_t *dw, uint32_t value, uint16_t addr
  *
  * @returns DWT_SUCCESS
  */
-static int32_t ull_otpwrite(dwchip_t *dw, uint32_t value, uint16_t address)
+int32_t ull_otpwrite(dwchip_t *dw, uint32_t value, uint16_t address)
 {
     // program the word
     dwt_otpprogword32(dw, value, address);
@@ -4360,7 +4360,7 @@ static int32_t ull_otpwrite(dwchip_t *dw, uint32_t value, uint16_t address)
  *
  * no return value
  */
-static void ull_entersleep(dwchip_t *dw, int32_t idle_rc)
+void ull_entersleep(dwchip_t *dw, int32_t idle_rc)
 {
     // OTP low power mode
     ull_dis_otp_ips(dw, 1);
@@ -4389,7 +4389,7 @@ static void ull_entersleep(dwchip_t *dw, int32_t idle_rc)
  *
  * no return value
  */
-static void ull_configuresleepcnt(dwchip_t *dw, uint16_t sleepcnt)
+void ull_configuresleepcnt(dwchip_t *dw, uint16_t sleepcnt)
 {
 
     ull_aon_write(dw, (uint16_t)AON_SLPCNT_LO, (uint8_t)(sleepcnt));
@@ -4425,7 +4425,7 @@ static void ull_enter_sleep_fcmd(dwchip_t *dw)
  *
  * @returns the number of XTAL cycles per low-power oscillator cycle. LP OSC frequency = 38.4 MHz/return value
  */
-static uint16_t ull_calibratesleepcnt(dwchip_t *dw)
+uint16_t ull_calibratesleepcnt(dwchip_t *dw)
 {
     uint16_t temp = 0U;
     uint8_t temp2 = 0U;
@@ -4486,7 +4486,7 @@ static uint16_t ull_calibratesleepcnt(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_configuresleep(dwchip_t *dw, uint16_t mode, uint8_t wake)
+void ull_configuresleep(dwchip_t *dw, uint16_t mode, uint8_t wake)
 {
     uint8_t temp2;
     // set LP OSC trim value to increase freq. to max
@@ -4522,7 +4522,7 @@ static void ull_configuresleep(dwchip_t *dw, uint16_t mode, uint8_t wake)
  *
  * no return value
  */
-static void ull_clearaonconfig(dwchip_t *dw)
+void ull_clearaonconfig(dwchip_t *dw)
 {
     // Clear any AON auto download bits (as reset will trigger AON download)
     dwt_write16bitoffsetreg(dw, AON_DIG_CFG_ID, 0U, 0x00U);
@@ -4549,7 +4549,7 @@ static void ull_clearaonconfig(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_entersleepaftertx(dwchip_t *dw, int32_t enable)
+void ull_entersleepaftertx(dwchip_t *dw, int32_t enable)
 {
     // OTP low power mode
     ull_dis_otp_ips(dw, 1);
@@ -4583,7 +4583,7 @@ static void ull_entersleepaftertx(dwchip_t *dw, int32_t enable)
  *
  * no return value
  */
-static void ull_entersleepafter(dwchip_t *dw, int32_t event_mask)
+void ull_entersleepafter(dwchip_t *dw, int32_t event_mask)
 {
     uint16_t seq_ctrl_or = 0U;
     uint16_t seq_ctrl_and = 0xFFFFU;
@@ -4671,7 +4671,7 @@ static int32_t ull_spicswakeup(dwchip_t *dw, uint8_t *buff, uint16_t length)
  *
  * returns DWT_SUCCESS for success, or DWT_ERROR for error
  */
-static int32_t ull_check_dev_id(dwchip_t *dw)
+int32_t ull_check_dev_id(dwchip_t *dw)
 {
     uint32_t dev_id;
     int32_t ret = (int32_t)DWT_ERROR;
@@ -4705,7 +4705,7 @@ static int32_t ull_check_dev_id(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_configciadiag(dwchip_t *dw, uint8_t enable_mask)
+void ull_configciadiag(dwchip_t *dw, uint8_t enable_mask)
 {
     if ((enable_mask & (uint8_t)DW_CIA_DIAG_LOG_ALL) != 0U)
     {
@@ -4744,7 +4744,7 @@ static void ull_configciadiag(dwchip_t *dw, uint8_t enable_mask)
  *
  * no return value
  */
-static void ull_enableautoack(dwchip_t *dw, uint8_t responseDelayTime, int32_t enable)
+void ull_enableautoack(dwchip_t *dw, uint8_t responseDelayTime, int32_t enable)
 {
     // Set auto ACK reply delay
     dwt_write8bitoffsetreg(dw, ACK_RESP_ID, 3U, responseDelayTime); // In symbols
@@ -4771,7 +4771,7 @@ static void ull_enableautoack(dwchip_t *dw, uint8_t responseDelayTime, int32_t e
  *
  * no return value
  */
-static void ull_signal_rx_buff_free(dwchip_t *dw)
+void ull_signal_rx_buff_free(dwchip_t *dw)
 {
     dwt_writefastCMD(dw, CMD_DB_TOGGLE);
 
@@ -4798,7 +4798,7 @@ static void ull_signal_rx_buff_free(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_setdblrxbuffmode(dwchip_t *dw, dwt_dbl_buff_state_e dbl_buff_state, dwt_dbl_buff_mode_e dbl_buff_mode)
+void ull_setdblrxbuffmode(dwchip_t *dw, dwt_dbl_buff_state_e dbl_buff_state, dwt_dbl_buff_mode_e dbl_buff_mode)
 {
     uint32_t or_val = 0UL, and_val = UINT32_MAX;
 
@@ -4851,7 +4851,7 @@ static void ull_setdblrxbuffmode(dwchip_t *dw, dwt_dbl_buff_state_e dbl_buff_sta
  *
  * no return value
  */
-static void ull_setrxaftertxdelay(dwchip_t *dw, uint32_t rxDelayTime)
+void ull_setrxaftertxdelay(dwchip_t *dw, uint32_t rxDelayTime)
 {
     uint32_t val = dwt_read32bitreg(dw, ACK_RESP_ID); // Read ACK_RESP_T_ID register
 
@@ -4872,7 +4872,7 @@ static void ull_setrxaftertxdelay(dwchip_t *dw, uint32_t rxDelayTime)
  *
  * return value is 1 if the IRQS bit is set and 0 otherwise
  */
-static uint8_t ull_checkirq(dwchip_t *dw)
+uint8_t ull_checkirq(dwchip_t *dw)
 {
     /* Reading the lower byte only is enough for this operation */
     return (dwt_read8bitoffsetreg(dw, SYS_STATUS_ID, 0U) & SYS_STATUS_IRQS_BIT_MASK);
@@ -4888,7 +4888,7 @@ static uint8_t ull_checkirq(dwchip_t *dw)
  *
  * return value is 1 if the IDLE_RC bit is set and 0 otherwise
  */
-static uint8_t ull_checkidlerc(dwchip_t *dw)
+uint8_t ull_checkidlerc(dwchip_t *dw)
 {
     /* Poll DW IC until IDLE_RC event set. This means that DW IC is in IDLE_RC state and ready */
     uint32_t reg = ((uint32_t)dwt_read16bitoffsetreg(dw, SYS_STATUS_ID, 2U) << 16UL);
@@ -5249,7 +5249,7 @@ static void ull_isr(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_setleds(dwchip_t *dw, uint8_t mode)
+void ull_setleds(dwchip_t *dw, uint8_t mode)
 {
     uint32_t reg;
     if ((mode & (uint8_t)DWT_LEDS_ENABLE) != 0U)
@@ -5367,7 +5367,7 @@ static void ull_force_clocks(dwchip_t *dw, int32_t clocks)
  *
  * no return value
  */
-static void ull_setreferencetrxtime(dwchip_t *dw, uint32_t reftime)
+void ull_setreferencetrxtime(dwchip_t *dw, uint32_t reftime)
 {
     dwt_write32bitoffsetreg(dw, DREF_TIME_ID, 0U, reftime); // Note: bit 0 of this register is ignored
 } // end ull_setreferencetrxtime()
@@ -5385,7 +5385,7 @@ static void ull_setreferencetrxtime(dwchip_t *dw, uint32_t reftime)
  *
  * no return value
  */
-static void ull_setdelayedtrxtime(dwchip_t *dw, uint32_t starttime)
+void ull_setdelayedtrxtime(dwchip_t *dw, uint32_t starttime)
 {
     dwt_write32bitoffsetreg(dw, DX_TIME_ID, 0U, starttime); // Note: bit 0 of this register is ignored
 } // end ull_setdelayedtrxtime()
@@ -5435,7 +5435,7 @@ static void dwt_adjust_delaytime(dwchip_t *dw, int32_t tx_rx)
  *
  * @returns DWT_SUCCESS for success, or DWT_ERROR for error (e.g. a delayed transmission will be cancelled if the delayed time has passed)
  */
-static int32_t ull_starttx(dwchip_t *dw, uint8_t mode)
+int32_t ull_starttx(dwchip_t *dw, uint8_t mode)
 {
     int32_t retval = (int32_t)DWT_SUCCESS;
     uint16_t checkTxOK = 0U;
@@ -5543,7 +5543,7 @@ static int32_t ull_starttx(dwchip_t *dw, uint8_t mode)
  *
  * no return value
  */
-static void ull_forcetrxoff(dwchip_t *dw)
+void ull_forcetrxoff(dwchip_t *dw)
 {
     // check if in TX or RX state before forcing device into IDLE state
     if (!(dwt_read8bitoffsetreg(dw, SYS_STATE_LO_ID, 2U) <= DW_SYS_STATE_IDLE))
@@ -5582,7 +5582,7 @@ static void ull_forcetrxoff(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_setsniffmode(dwchip_t *dw, int32_t enable, uint8_t timeOn, uint8_t timeOff)
+void ull_setsniffmode(dwchip_t *dw, int32_t enable, uint8_t timeOn, uint8_t timeOff)
 {
     if (enable != 0)
     {
@@ -5620,7 +5620,7 @@ static void ull_setsniffmode(dwchip_t *dw, int32_t enable, uint8_t timeOn, uint8
  *
  * @returns DWT_SUCCESS for success, or DWT_ERROR for error (e.g. a delayed receive enable will be too far in the future if delayed time has passed)
  */
-static int32_t ull_rxenable(dwchip_t *dw, int32_t mode)
+int32_t ull_rxenable(dwchip_t *dw, int32_t mode)
 {
     uint8_t temp1;
     dwt_error_e retval = DWT_SUCCESS;
@@ -5686,7 +5686,7 @@ static int32_t ull_rxenable(dwchip_t *dw, int32_t mode)
  *
  * no return value
  */
-static void ull_setrxtimeout(dwchip_t *dw, uint32_t on_time)
+void ull_setrxtimeout(dwchip_t *dw, uint32_t on_time)
 {
     if (on_time > 0UL)
     {
@@ -5714,7 +5714,7 @@ static void ull_setrxtimeout(dwchip_t *dw, uint32_t on_time)
  *
  * no return value
  */
-static void ull_setpreambledetecttimeout(dwchip_t *dw, uint16_t timeout)
+void ull_setpreambledetecttimeout(dwchip_t *dw, uint16_t timeout)
 {
     dwt_write16bitoffsetreg(dw, DTUNE1_ID, 0U, timeout);
 }
@@ -5789,7 +5789,7 @@ static void ull_setinterrupt(dwchip_t *dw, uint32_t bitmask_lo, uint32_t bitmask
  *
  * no return value
  */
-static void ull_setinterrupt_db(dwchip_t *dw, uint8_t bitmask, dwt_INT_options_e INT_options)
+void ull_setinterrupt_db(dwchip_t *dw, uint8_t bitmask, dwt_INT_options_e INT_options)
 {
     decaIrqStatus_t stat;
 
@@ -5828,7 +5828,7 @@ static void ull_setinterrupt_db(dwchip_t *dw, uint8_t bitmask, dwt_INT_options_e
  *
  * no return value
  */
-static void ull_configeventcounters(dwchip_t *dw, int32_t enable)
+void ull_configeventcounters(dwchip_t *dw, int32_t enable)
 {
     // Need to clear and disable, can't just clear
     dwt_write8bitoffsetreg(dw, EVC_CTRL_ID, 0x0U, (uint8_t)(EVC_CTRL_EVC_CLR_BIT_MASK));
@@ -5850,7 +5850,7 @@ static void ull_configeventcounters(dwchip_t *dw, int32_t enable)
  *
  * no return value
  */
-static void ull_readeventcounters(dwchip_t *dw, dwt_deviceentcnts_t *counters)
+void ull_readeventcounters(dwchip_t *dw, dwt_deviceentcnts_t *counters)
 {
     uint32_t temp;
 
@@ -5897,7 +5897,7 @@ static void ull_readeventcounters(dwchip_t *dw, dwt_deviceentcnts_t *counters)
  *
  * return None
  */
-static void ull_softreset_fcmd(dwchip_t *dw)
+void ull_softreset_fcmd(dwchip_t *dw)
 {
     dwt_writefastCMD(dw, CMD_SEMA_RESET);
 }
@@ -5933,7 +5933,7 @@ static void ull_softreset_no_sema_fcmd(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_softreset(dwchip_t *dw, int32_t reset_semaphore)
+void ull_softreset(dwchip_t *dw, int32_t reset_semaphore)
 {
     // clear any AON configurations (this will leave the device at FOSC/4, thus we need low SPI rate)
     ull_clearaonconfig(dw);
@@ -5980,7 +5980,7 @@ static void ull_softreset(dwchip_t *dw, int32_t reset_semaphore)
  *
  * no return value
  */
-static void ull_setxtaltrim(dwchip_t *dw, uint8_t value)
+void ull_setxtaltrim(dwchip_t *dw, uint8_t value)
 {
     value &= XTAL_TRIM_BIT_MASK;
     LOCAL_DATA(dw)->init_xtrim = value;
@@ -5998,7 +5998,7 @@ static void ull_setxtaltrim(dwchip_t *dw, uint8_t value)
  *
  * returns the XTAL trim value set upon initialisation
  */
-static uint8_t ull_getxtaltrim(dwchip_t *dw)
+uint8_t ull_getxtaltrim(dwchip_t *dw)
 {
     return LOCAL_DATA(dw)->init_xtrim;
 }
@@ -6099,7 +6099,7 @@ static void ull_repeated_cw(dwchip_t *dw, int32_t cw_enable, int32_t cw_mode_con
  *
  * No return value
  */
-static void ull_stop_repeated_frames(dwchip_t *dw)
+void ull_stop_repeated_frames(dwchip_t *dw)
 {
     // Disable repeated frames
     dwt_and8bitoffsetreg(dw, TEST_CTRL0_ID, 0x0U, (uint8_t)(~TEST_CTRL0_TX_PSTM_BIT_MASK));
@@ -6119,7 +6119,7 @@ static void ull_stop_repeated_frames(dwchip_t *dw)
  *
  * No return value
  */
-static void ull_repeated_frames(dwchip_t *dw, uint32_t framerepetitionrate)
+void ull_repeated_frames(dwchip_t *dw, uint32_t framerepetitionrate)
 {
     // Enable repeated frames
     dwt_or8bitoffsetreg(dw, TEST_CTRL0_ID, 0x0U, TEST_CTRL0_TX_PSTM_BIT_MASK);
@@ -6143,7 +6143,7 @@ static void ull_repeated_frames(dwchip_t *dw, uint32_t framerepetitionrate)
  *
  * no return value
  */
-static void ull_send_test_preamble(dwchip_t *dw, uint16_t delay, uint32_t test_txpower)
+void ull_send_test_preamble(dwchip_t *dw, uint16_t delay, uint32_t test_txpower)
 {
     //save current TX power so we can restore this
     uint32_t txpow = dwt_read32bitoffsetreg(dw, TX_POWER_ID, 0U);
@@ -6219,7 +6219,7 @@ static void ull_disable_rftx_blocks(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_configcwmode(dwchip_t *dw)
+void ull_configcwmode(dwchip_t *dw)
 {
     ull_enable_rf_tx(dw, 1);
     ull_enable_rftx_blocks(dw);
@@ -6239,7 +6239,7 @@ static void ull_configcwmode(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_configcontinuousframemode(dwchip_t *dw, uint32_t framerepetitionrate)
+void ull_configcontinuousframemode(dwchip_t *dw, uint32_t framerepetitionrate)
 {
     // NOTE: dwt_configure and dwt_configuretxrf must be called before a call to this API
     ull_enable_rf_tx(dw, 1);
@@ -6258,7 +6258,7 @@ static void ull_configcontinuousframemode(dwchip_t *dw, uint32_t framerepetition
  *
  * no return value
  */
-static void ull_disablecontinuousframemode(dwchip_t *dw)
+void ull_disablecontinuousframemode(dwchip_t *dw)
 {
     // NOTE: dwt_configure, dwt_configuretxrf and dwt_configcontinuousframemode must be called before a call to this API
     ull_stop_repeated_frames(dw);
@@ -6277,7 +6277,7 @@ static void ull_disablecontinuousframemode(dwchip_t *dw)
  *
  * no return value
  */
-static void ull_disablecontinuouswavemode(dwchip_t *dw)
+void ull_disablecontinuouswavemode(dwchip_t *dw)
 {
     ull_repeated_cw(dw, 0, 0);
     ull_force_clocks(dw, FORCE_CLK_AUTO);
@@ -6296,7 +6296,7 @@ static void ull_disablecontinuouswavemode(dwchip_t *dw)
  *
  * @returns  (temp_raw<<8)|(vbat_raw)
  */
-static uint16_t ull_readtempvbat(dwchip_t *dw)
+uint16_t ull_readtempvbat(dwchip_t *dw)
 {
     uint16_t wr_buf;
 
@@ -6394,7 +6394,7 @@ static uint16_t ull_readsar(dwchip_t *dw, uint8_t input_mux, uint8_t attn)
  *
  * returns: temperature sensor value
  */
-static float ull_convertrawtemperature(dwchip_t *dw, uint8_t raw_temp)
+float ull_convertrawtemperature(dwchip_t *dw, uint8_t raw_temp)
 {
     float realtemp;
 
@@ -6416,7 +6416,7 @@ static float ull_convertrawtemperature(dwchip_t *dw, uint8_t raw_temp)
  *
  * @returns: voltage sensor value
  */
-static float ull_convertrawvoltage(dwchip_t *dw, uint8_t raw_voltage)
+float ull_convertrawvoltage(dwchip_t *dw, uint8_t raw_voltage)
 {
     float realvolt;
 
@@ -6438,7 +6438,7 @@ static float ull_convertrawvoltage(dwchip_t *dw, uint8_t raw_voltage)
  *
  * returns: 8-bit raw temperature sensor value
  */
-static uint8_t ull_readwakeuptemp(dwchip_t *dw)
+uint8_t ull_readwakeuptemp(dwchip_t *dw)
 {
     return dwt_read8bitoffsetreg(dw, SAR_READING_ID, 1U);
 }
@@ -6455,7 +6455,7 @@ static uint8_t ull_readwakeuptemp(dwchip_t *dw)
  *
  * @returns: 8-bit raw battery voltage sensor value
  */
-static uint8_t ull_readwakeupvbat(dwchip_t *dw)
+uint8_t ull_readwakeupvbat(dwchip_t *dw)
 {
     return dwt_read8bitoffsetreg(dw, SAR_READING_ID, 0U);
 }
@@ -6475,7 +6475,7 @@ static uint8_t ull_readwakeupvbat(dwchip_t *dw)
  * output parameters:
  * returns: (uint8_t) The setting that was written to the PG_DELAY register (when calibration completed)
  */
-static uint8_t ull_calcbandwidthadj(dwchip_t *dw, uint16_t target_count)
+uint8_t ull_calcbandwidthadj(dwchip_t *dw, uint16_t target_count)
 {
     // Force system clock to FOSC/4 and TX clocks on and enable RF blocks
     ull_force_clocks(dw, FORCE_CLK_SYS_TX);
@@ -6514,7 +6514,7 @@ static uint8_t ull_calcbandwidthadj(dwchip_t *dw, uint16_t target_count)
  * returns (uint16_t) - The count value calculated from the provided PG_DELAY value (from PGC_STATUS) - used as reference
  * for later bandwidth adjustments
  */
-static uint16_t ull_calcpgcount(dwchip_t *dw, uint8_t pgdly)
+uint16_t ull_calcpgcount(dwchip_t *dw, uint8_t pgdly)
 {
     uint16_t count = 0U;
 
@@ -6558,7 +6558,7 @@ static uint16_t ull_calcpgcount(dwchip_t *dw, uint8_t pgdly)
  *
  * return A uint32_t value containing the value of the PLL status register (only bits [14:0] are valid)
  */
-static uint32_t ull_readpllstatus(dwchip_t *dw){
+uint32_t ull_readpllstatus(dwchip_t *dw){
     return dwt_read32bitoffsetreg(dw, PLL_STATUS_ID, 0x0);
 }
 
@@ -6574,7 +6574,7 @@ static uint32_t ull_readpllstatus(dwchip_t *dw){
  * @returns DWT_SUCCESS for success or DWT_ERROR for error.
  */
 
-static int32_t ull_pll_cal(dwchip_t *dw)
+int32_t ull_pll_cal(dwchip_t *dw)
 {
     (void)ull_setdwstate(dw, (int32_t)DWT_DW_IDLE_RC);
     return ull_setdwstate(dw, (int32_t)DWT_DW_IDLE);
@@ -6589,7 +6589,7 @@ static int32_t ull_pll_cal(dwchip_t *dw)
  *
  * No return value
  */
-static void ull_configure_rf_port(dwchip_t *dw, dwt_rf_port_ctrl_e port_control)
+void ull_configure_rf_port(dwchip_t *dw, dwt_rf_port_ctrl_e port_control)
 {
     uint32_t set_bits_val = 0;
     uint32_t p_ctrl = (uint32_t) port_control;
@@ -6623,7 +6623,7 @@ static void ull_configure_rf_port(dwchip_t *dw, dwt_rf_port_ctrl_e port_control)
  *
  * no return value
  */
-static void ull_configure_aes(dwchip_t *dw, const dwt_aes_config_t *pCfg)
+void ull_configure_aes(dwchip_t *dw, const dwt_aes_config_t *pCfg)
 {
     uint16_t tmp;
 
@@ -6649,7 +6649,7 @@ static void ull_configure_aes(dwchip_t *dw, const dwt_aes_config_t *pCfg)
  *
  * @return  dwt_mic_size_e - reg value number
  */
-static dwt_mic_size_e ull_mic_size_from_bytes(dwchip_t *dw, uint8_t mic_size_in_bytes)
+dwt_mic_size_e ull_mic_size_from_bytes(dwchip_t *dw, uint8_t mic_size_in_bytes)
 {
     (void)dw;
     uint8_t  mic_size = (uint8_t)MIC_0;
@@ -6673,7 +6673,7 @@ static dwt_mic_size_e ull_mic_size_from_bytes(dwchip_t *dw, uint8_t mic_size_in_
  *
  * no return value
  */
-static void ull_set_keyreg_128(dwchip_t *dw, const dwt_aes_key_t *key)
+void ull_set_keyreg_128(dwchip_t *dw, const dwt_aes_key_t *key)
 {
     /* program Key to the register : only 128 bit key can be used */
     dwt_write32bitreg(dw, AES_KEY0_ID, (uint32_t)key->key0);
@@ -6795,7 +6795,7 @@ static void ull_update_nonce_GCM(dwchip_t *dw, uint8_t *nonce)
  *
  * @return  AES_STS_ID status bits
  */
-static int8_t ull_do_aes(dwchip_t *dw, dwt_aes_job_t *job, dwt_aes_core_type_e core_type)
+int8_t ull_do_aes(dwchip_t *dw, dwt_aes_job_t *job, dwt_aes_core_type_e core_type)
 {
     uint32_t tmp, dest_reg;
     uint16_t allow_size;
@@ -6984,7 +6984,7 @@ static int8_t ull_do_aes(dwchip_t *dw, dwt_aes_job_t *job, dwt_aes_core_type_e c
  * @return none
  *
  */
-static void ull_ds_sema_request(dwchip_t *dw)
+void ull_ds_sema_request(dwchip_t *dw)
 {
     dwt_writefastCMD(dw, CMD_SEMA_REQ);
 }
@@ -7000,7 +7000,7 @@ static void ull_ds_sema_request(dwchip_t *dw)
  *
  * return None
  */
-static void ull_ds_sema_release(dwchip_t *dw)
+void ull_ds_sema_release(dwchip_t *dw)
 {
     // Need to release twice.
     dwt_writefastCMD(dw, CMD_SEMA_REL);
@@ -7018,7 +7018,7 @@ static void ull_ds_sema_release(dwchip_t *dw)
  *
  * return None
  */
-static void ull_ds_sema_force(dwchip_t *dw)
+void ull_ds_sema_force(dwchip_t *dw)
 {
     dwt_writefastCMD(dw, CMD_SEMA_FORCE);
 }
@@ -7034,7 +7034,7 @@ static void ull_ds_sema_force(dwchip_t *dw)
  *
  * @return Semaphore value
  */
-static uint8_t ull_ds_sema_status(dwchip_t *dw)
+uint8_t ull_ds_sema_status(dwchip_t *dw)
 {
     return dwt_read8bitoffsetreg(dw, SEMAPHORE_REG_ADDR, 0U);
 }
@@ -7050,7 +7050,7 @@ static uint8_t ull_ds_sema_status(dwchip_t *dw)
 *
 * @return High byte of Semaphore value, i.e bits 8-15 of Reg:1A:00-SPI_SEM
 */
-static uint8_t ull_ds_sema_status_hi(dwchip_t* dw)
+uint8_t ull_ds_sema_status_hi(dwchip_t* dw)
 {
     return dwt_read8bitoffsetreg(dw, SEMAPHORE_REG_ADDR, 1U);
 }
@@ -7069,7 +7069,7 @@ static uint8_t ull_ds_sema_status_hi(dwchip_t* dw)
  *
  * return None
  */
-static void ull_ds_en_sleep(dwchip_t *dw, dwt_host_sleep_en_e host_sleep_en)
+void ull_ds_en_sleep(dwchip_t *dw, dwt_host_sleep_en_e host_sleep_en)
 {
     uint8_t sem_val;
 
@@ -7089,7 +7089,7 @@ static void ull_ds_en_sleep(dwchip_t *dw, dwt_host_sleep_en_e host_sleep_en)
 *
 * @return DWT_SUCCESS or DWT_ERROR (if input parameters not consistent)
 */
-static int32_t ull_ds_setinterrupt_SPIxavailable(dwchip_t* dw, dwt_spi_host_e spi_num, dwt_INT_options_e int_set)
+int32_t ull_ds_setinterrupt_SPIxavailable(dwchip_t* dw, dwt_spi_host_e spi_num, dwt_INT_options_e int_set)
 {
     uint8_t    sem_val;
     uint8_t    bit_mask = 0U;
@@ -7145,7 +7145,7 @@ static int32_t ull_ds_setinterrupt_SPIxavailable(dwchip_t* dw, dwt_spi_host_e sp
  * no return value
  *
  */
-static void ull_configure_le_address(dwchip_t *dw, uint16_t addr, int32_t leIndex)
+void ull_configure_le_address(dwchip_t *dw, uint16_t addr, int32_t leIndex)
 {
     switch (leIndex)
     {
@@ -7178,7 +7178,7 @@ static void ull_configure_le_address(dwchip_t *dw, uint16_t addr, int32_t leInde
  * @param dw - DW3720 chip descriptor handler.
  * @param en - DWT_EQ_ENABLED or DWT_EQ_DISABLED, enables/disables the equaliser block
  */
-static void ull_enable_disable_eq(dwchip_t *dw, uint8_t en)
+void ull_enable_disable_eq(dwchip_t *dw, uint8_t en)
 {
     dwt_modify16bitoffsetreg(dw, IP_CONFIG_LO_ID, 0, (uint16_t)~IP_CONFIG_LO_EQ_ENABLE_BIT_MASK, ((uint16_t)en & 0x1U) << IP_CONFIG_LO_EQ_ENABLE_BIT_OFFSET);
 }
@@ -7194,7 +7194,7 @@ static void ull_enable_disable_eq(dwchip_t *dw, uint8_t en)
  * return none
  *
  */
-static void ull_configuresfdtype(dwchip_t *dw, uint32_t sfdType)
+void ull_configuresfdtype(dwchip_t *dw, uint32_t sfdType)
 {
     dwt_modify32bitoffsetreg(dw, CHAN_CTRL_ID, 0U, ~CHAN_CTRL_SFD_TYPE_BIT_MASK,
                              (CHAN_CTRL_SFD_TYPE_BIT_MASK & (sfdType << CHAN_CTRL_SFD_TYPE_BIT_OFFSET)));
@@ -7210,7 +7210,7 @@ static void ull_configuresfdtype(dwchip_t *dw, uint32_t sfdType)
  *
  * return none
  */
-static void ull_writesysstatuslo(dwchip_t *dw, uint32_t mask)
+void ull_writesysstatuslo(dwchip_t *dw, uint32_t mask)
 {
     dwt_write32bitreg(dw, SYS_STATUS_ID, mask);
 }
@@ -7224,7 +7224,7 @@ static void ull_writesysstatuslo(dwchip_t *dw, uint32_t mask)
  *
  * return none
  */
-static void ull_writesysstatushi(dwchip_t *dw, uint32_t mask)
+void ull_writesysstatushi(dwchip_t *dw, uint32_t mask)
 {
     dwt_write16bitoffsetreg(dw, SYS_STATUS_HI_ID, 0U, (uint16_t)mask);
 }
@@ -7237,7 +7237,7 @@ static void ull_writesysstatushi(dwchip_t *dw, uint32_t mask)
  *
  * return A uint32_t value containing the value of the system status register (lower 32 bits)
  */
-static uint32_t ull_readsysstatuslo(dwchip_t *dw)
+uint32_t ull_readsysstatuslo(dwchip_t *dw)
 {
     return dwt_read32bitoffsetreg(dw, SYS_STATUS_ID, 0U);
 }
@@ -7250,7 +7250,7 @@ static uint32_t ull_readsysstatuslo(dwchip_t *dw)
  *
  * @return A uint16_t value containing the value of the system status register (higher 16 bits)
  */
-static uint16_t ull_readsysstatushi(dwchip_t *dw)
+uint16_t ull_readsysstatushi(dwchip_t *dw)
 {
     /*
      * DW3000 SYS_STATUS_HI register is 13 bits wide, thus we revert to a 16-bit read of the register
@@ -7269,7 +7269,7 @@ static uint16_t ull_readsysstatushi(dwchip_t *dw)
  *
  * return none
  */
-static void ull_writerdbstatus(dwchip_t *dw, uint8_t mask)
+void ull_writerdbstatus(dwchip_t *dw, uint8_t mask)
 {
     dwt_write8bitoffsetreg(dw, RDB_STATUS_ID, 0U, mask);
 }
@@ -7282,7 +7282,7 @@ static void ull_writerdbstatus(dwchip_t *dw, uint8_t mask)
  *
  * return A uint8_t value containing the value of the Receiver Double Buffer status register.
  */
-static uint8_t ull_readrdbstatus(dwchip_t *dw)
+uint8_t ull_readrdbstatus(dwchip_t *dw)
 {
     return dwt_read8bitoffsetreg(dw, SYS_STATUS_ID, 0U);
 }
@@ -7297,7 +7297,7 @@ static uint8_t ull_readrdbstatus(dwchip_t *dw)
  *
  * return frame_len - A uint16_t with the number of octets in the received frame.
  */
-static uint16_t ull_getframelength(dwchip_t *dw, uint8_t *rng_bit)
+uint16_t ull_getframelength(dwchip_t *dw, uint8_t *rng_bit)
 {
     uint16_t finfo16;
 
@@ -7349,7 +7349,7 @@ static uint16_t ull_getframelength(dwchip_t *dw, uint8_t *rng_bit)
  * return none
  *
  */
-static void ull_timers_reset(dwchip_t *dw)
+void ull_timers_reset(dwchip_t *dw)
 {
     dwt_and16bitoffsetreg(dw, SOFT_RST_ID, 0U, (uint16_t)(~SOFT_RST_TIM_RST_N_BIT_MASK));
 }
@@ -7365,7 +7365,7 @@ static void ull_timers_reset(dwchip_t *dw)
  * return event counts from both timers: TIMER0 events in bits [7:0], TIMER1 events in bits [15:8]
  *
  */
-static uint16_t ull_timers_read_and_clear_events(dwchip_t *dw)
+uint16_t ull_timers_read_and_clear_events(dwchip_t *dw)
 {
     return dwt_read16bitoffsetreg(dw, TIMER_STATUS_ID, 0U);
 }
@@ -7380,7 +7380,7 @@ static uint16_t ull_timers_read_and_clear_events(dwchip_t *dw)
  * return none
  *
  */
-static void ull_configure_timer(dwchip_t* dw, dwt_timer_cfg_t *tim_cfg)
+void ull_configure_timer(dwchip_t* dw, dwt_timer_cfg_t *tim_cfg)
 {
 
     //for TIMER1 we write the configuration at offset 2
@@ -7402,7 +7402,7 @@ static void ull_configure_timer(dwchip_t* dw, dwt_timer_cfg_t *tim_cfg)
  * return none
  *
  */
-static void ull_configure_wificoex_gpio(dwchip_t *dw, uint8_t timer_coexout, uint8_t coex_swap)
+void ull_configure_wificoex_gpio(dwchip_t *dw, uint8_t timer_coexout, uint8_t coex_swap)
 {
     uint32_t gpio_cfg;
 
@@ -7442,7 +7442,7 @@ static void ull_configure_wificoex_gpio(dwchip_t *dw, uint8_t timer_coexout, uin
  * return none
  *
  */
-static void ull_configure_and_set_antenna_selection_gpio(dwchip_t *dw, uint8_t antenna_config)
+void ull_configure_and_set_antenna_selection_gpio(dwchip_t *dw, uint8_t antenna_config)
 {
     uint32_t gpio_mode_cfg = 0x0UL;
     uint32_t gpio_mode_flag = 0x0UL;
@@ -7488,7 +7488,7 @@ static void ull_configure_and_set_antenna_selection_gpio(dwchip_t *dw, uint8_t a
  * return none
  *
  */
-static void ull_set_timer_expiration(dwchip_t *dw, dwt_timers_e timer_name, uint32_t expire)
+void ull_set_timer_expiration(dwchip_t *dw, dwt_timers_e timer_name, uint32_t expire)
 {
     if (timer_name == DWT_TIMER0)
     {
@@ -7511,7 +7511,7 @@ static void ull_set_timer_expiration(dwchip_t *dw, dwt_timers_e timer_name, uint
  * return none
  *
  */
-static void ull_timer_enable(dwchip_t *dw, dwt_timers_e timer_name)
+void ull_timer_enable(dwchip_t *dw, dwt_timers_e timer_name)
 {
     uint8_t val = 1U << ((uint8_t)timer_name);
 
@@ -7534,7 +7534,7 @@ static void ull_timer_enable(dwchip_t *dw, dwt_timers_e timer_name)
  * return event counts from both timers: TIMER0 events in bits [7:0], TIMER1 events in bits [15:8]
  *
  */
-static void ull_wifi_coex_set(dwchip_t *dw, dwt_wifi_coex_e enable, int32_t coex_io_swap)
+void ull_wifi_coex_set(dwchip_t *dw, dwt_wifi_coex_e enable, int32_t coex_io_swap)
 {
     uint32_t mode = (coex_io_swap == 1) ? ~(uint32_t)GPIO4_FUNC_MASK : ~(uint32_t)GPIO5_FUNC_MASK;
     uint8_t dir_out_off = (coex_io_swap == 1) ? ~(uint8_t)GPIO4_BIT_MASK : ~(uint8_t)GPIO5_BIT_MASK;
@@ -7566,7 +7566,7 @@ static void ull_wifi_coex_set(dwchip_t *dw, dwt_wifi_coex_e enable, int32_t coex
  * none
  *
  */
-static void ull_reset_system_counter(dwchip_t *dw)
+void ull_reset_system_counter(dwchip_t *dw)
 {
     // the two bits: OSTR_MODE and FORCE_SYNC need to be set and then cleared to reset system time/counter
     dwt_or8bitoffsetreg(dw, EC_CTRL_ID, 0x1U, (EC_CTRL_OSTR_MODE_BIT_MASK >> 8U));
@@ -7598,7 +7598,7 @@ static void ull_reset_system_counter(dwchip_t *dw)
  * none
  *
  */
-static void ull_config_ostr_mode(dwchip_t *dw, uint8_t enable, uint16_t wait_time)
+void ull_config_ostr_mode(dwchip_t *dw, uint8_t enable, uint16_t wait_time)
 {
     uint16_t temp = (wait_time << EC_CTRL_OSTS_WAIT_BIT_OFFSET) & EC_CTRL_OSTS_WAIT_BIT_MASK;
     if (enable != 0U)
@@ -7621,7 +7621,7 @@ static void ull_config_ostr_mode(dwchip_t *dw, uint8_t enable, uint16_t wait_tim
  * none
  *
  */
-static void ull_set_fixedsts(dwchip_t *dw, uint8_t set)
+void ull_set_fixedsts(dwchip_t *dw, uint8_t set)
 {
 
     if (set != 0U)
@@ -7656,7 +7656,7 @@ static void ull_set_fixedsts(dwchip_t *dw, uint8_t set)
  *      DWT_ERROR: if the API could not calculate a valid adjusted TxPower setting
  *
  */
-static int32_t ull_adjust_tx_power(uint16_t boost, uint32_t ref_tx_power, uint8_t channel, uint32_t* adj_tx_power, uint16_t* applied_boost )
+int32_t ull_adjust_tx_power(uint16_t boost, uint32_t ref_tx_power, uint8_t channel, uint32_t* adj_tx_power, uint16_t* applied_boost )
 {
     uint16_t target_boost = 0U;
     uint16_t current_boost = 0U;
@@ -7841,7 +7841,7 @@ static int32_t ull_adjust_tx_power(uint16_t boost, uint32_t ref_tx_power, uint8_
  * none
  *
  */
-static uint32_t ull_readCIAversion(dwchip_t* dw)
+uint32_t ull_readCIAversion(dwchip_t* dw)
 {
     uint32_t indirect_pointer_a = 0UL;
     uint32_t write_buff = (CIA_VERSION_REG >> 16UL);
@@ -7868,7 +7868,7 @@ static uint32_t ull_readCIAversion(dwchip_t* dw)
  * none
  *
  */
-static void ull_set_alternate_pulse_shape(dwchip_t *dw, uint8_t set_alternate)
+void ull_set_alternate_pulse_shape(dwchip_t *dw, uint8_t set_alternate)
 {
 
     if (set_alternate != 0U)
@@ -7894,7 +7894,7 @@ static void ull_set_alternate_pulse_shape(dwchip_t *dw, uint8_t set_alternate)
  *
  * @return a uint8_t value indicating if success or failure.
  */
-static uint8_t ull_nlos_alldiag(dwchip_t *dw, dwt_nlos_alldiag_t *all_diag)
+uint8_t ull_nlos_alldiag(dwchip_t *dw, dwt_nlos_alldiag_t *all_diag)
 {
     if (all_diag->diag_type == IPATOV)
     {
@@ -7941,7 +7941,7 @@ static uint8_t ull_nlos_alldiag(dwchip_t *dw, dwt_nlos_alldiag_t *all_diag)
  * @param index - this is the pointer to the structure into which to read the data.
  *
  */
-static void ull_nlos_ipdiag(dwchip_t *dw, dwt_nlos_ipdiag_t *index)
+void ull_nlos_ipdiag(dwchip_t *dw, dwt_nlos_ipdiag_t *index)
 {
     index->index_fp_u32 = dwt_read32bitoffsetreg(dw, IP_DIAG_8_ID, 0U) & IP_DIAG_8_IPFPLOC_BIT_MASK;  // 0x0c:48:bits15-0 - preamble diagnostic 8: IP_FP
     index->index_pp_u32 = (dwt_read32bitoffsetreg(dw, IP_DIAG_0_ID, 0U) & IP_DIAG_0_PEAKLOC_BIT_MASK) >> 21UL;       // 0x0c:28:bits30-21 - preamble diagnostic 0: IP_PEAKI
@@ -8077,7 +8077,7 @@ static int32_t ull_setchannel(dwchip_t *dw, uint8_t ch)
  *
  * @return  none
  */
-static void ull_dis_otp_ips(dwchip_t *dw, int mode)
+void ull_dis_otp_ips(dwchip_t *dw, int mode)
 {
     uint8_t regval = 0U;
     uint8_t i;
@@ -8453,7 +8453,7 @@ static uint8_t ull_pll_ch5_auto_cal(dwchip_t *dw, uint32_t coarse_code, uint16_t
  *
  * @return DWT_SUCCESS on succes, and DWT_ERROR on invalid parameters.
  */
-static int32_t ull_xtal_temperature_compensation(dwchip_t *dw,
+int32_t ull_xtal_temperature_compensation(dwchip_t *dw,
     dwt_xtal_trim_t *params,
     uint8_t *xtaltrim)
 {
@@ -8517,7 +8517,7 @@ static int32_t ull_xtal_temperature_compensation(dwchip_t *dw,
  *
  * @return  none
  */
-static void ull_capture_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc)
+void ull_capture_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc)
 {
     uint32_t reg, adc_th, dtune4;
 
@@ -8617,7 +8617,7 @@ static void ull_capture_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc
  *
  * @return  none
  */
-static void ull_read_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc)
+void ull_read_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc)
 {
     uint32_t cmplx_len = (uint32_t)((uint32_t)capture_adc->length >> 4UL);   //Convert to number of 64-bit words
     uint32_t num_bytes = (cmplx_len * 6UL);            //Number of bytes to be read from Accumulator
@@ -9038,7 +9038,7 @@ static int32_t OPTSPEED ull_calculate_linear_tx_setting(struct dwchip_s *dw, int
 #define TX_POWER_FINE_SHIFT 2
 #define TX_POWER_FINE_MASK 0x3F
 
-static int OPTSPEED ull_convert_tx_power_to_index(int channel, uint8_t tx_power, uint8_t *tx_power_idx)
+int OPTSPEED ull_convert_tx_power_to_index(int channel, uint8_t tx_power, uint8_t *tx_power_idx)
 {
     tx_adj_lut_t ref_lut={0};
     uint8_t tx_power_coarse = (tx_power & TX_POWER_COARSE_BIT_MASK) >> TX_POWER_COARSE_BIT_OFFSET;
@@ -9115,7 +9115,7 @@ static int OPTSPEED ull_convert_tx_power_to_index(int channel, uint8_t tx_power,
  *
  * return None.
  */
-static void ull_set_pll_config(struct dwchip_s *dw, uint32_t pll_common)
+void ull_set_pll_config(struct dwchip_s *dw, uint32_t pll_common)
 {
     dwt_write32bitreg(dw, PLL_COMMON_ID, pll_common);
 }
@@ -9134,7 +9134,7 @@ static void ull_set_pll_config(struct dwchip_s *dw, uint32_t pll_common)
  *
  * return: returns DWT_SUCCESS on success and DWT_ERROR on invalid parameters.
  */
-static int ull_calculate_rssi(struct dwchip_s *dw, const dwt_cirdiags_t *diag, dwt_acc_idx_e acc_idx, int16_t *signal_strength)
+int ull_calculate_rssi(struct dwchip_s *dw, const dwt_cirdiags_t *diag, dwt_acc_idx_e acc_idx, int16_t *signal_strength)
 {
     int r_code = (int)DWT_ERROR;
     if ((NULL != diag) && (NULL != signal_strength))
@@ -9165,7 +9165,7 @@ static int ull_calculate_rssi(struct dwchip_s *dw, const dwt_cirdiags_t *diag, d
  *
  * return: returns DWT_SUCCESS on success and DWT_ERROR on input parameters.
  */
-static int ull_calculate_first_path_power(struct dwchip_s *dw, const dwt_cirdiags_t *diag, dwt_acc_idx_e acc_idx, int16_t *signal_strength)
+int ull_calculate_first_path_power(struct dwchip_s *dw, const dwt_cirdiags_t *diag, dwt_acc_idx_e acc_idx, int16_t *signal_strength)
 {
     int r_code = (int)DWT_ERROR;
     if ((NULL != diag) && (NULL != signal_strength))
@@ -9179,6 +9179,65 @@ static int ull_calculate_first_path_power(struct dwchip_s *dw, const dwt_cirdiag
         r_code = (int)DWT_SUCCESS;
     }
     return r_code;
+}
+
+void ull_setpdoaoffset(dwchip_t *dw, uint16_t pdoa_offset)
+{
+    pdoa_offset &= CIA_ADJUST_PDOA_ADJ_OFFSET_BIT_MASK;
+    dwt_modify16bitoffsetreg(dw, CIA_ADJUST_ID, 0U, (uint16_t)~CIA_ADJUST_PDOA_ADJ_OFFSET_BIT_MASK, pdoa_offset);
+}
+
+void ull_setphr(struct dwchip_s *dw, uint8_t phrRate, uint8_t phrMode)
+{
+    dwt_modify32bitoffsetreg(dw, SYS_CFG_ID, 0U, ~(SYS_CFG_PHR_MODE_BIT_MASK | SYS_CFG_PHR_6M8_BIT_MASK),
+            ((SYS_CFG_PHR_6M8_BIT_MASK & ((uint32_t)phrRate << SYS_CFG_PHR_6M8_BIT_OFFSET)) | (uint32_t)phrMode));
+}
+
+void ull_setdatarate(struct dwchip_s *dw, dwt_uwb_bit_rate_e bitRate)
+{
+    dwt_modify32bitoffsetreg(dw, TX_FCTRL_ID, 0U, ~(TX_FCTRL_TXBR_BIT_MASK), (uint32_t)bitRate<< TX_FCTRL_TXBR_BIT_OFFSET);
+}
+
+void ull_setsfdtimeout(struct dwchip_s *dw, uint16_t sfdTO)
+{
+    if (sfdTO == 0U)
+    {
+        sfdTO = DWT_SFDTOC_DEF;
+    }
+    dwt_write16bitoffsetreg(dw, DTUNE0_ID, 2U, sfdTO);
+}
+
+uint8_t ull_pll_chx_auto_cal(struct dwchip_s *dw, int32_t chan, uint32_t coarse_code, uint16_t sleep, uint8_t steps, int8_t temp)
+{
+    uint8_t steps_to_lock;
+
+    if(chan == 5)
+    {
+        return ull_pll_ch5_auto_cal(dw, coarse_code, sleep, steps, &steps_to_lock, temp);
+    }
+    else
+    {
+        return ull_pll_ch9_auto_cal(dw, coarse_code, sleep, steps, &steps_to_lock );
+    }
+}
+
+void ull_configtxrxfcs(struct dwchip_s *dw, dwt_fcs_mode_e fcs_mode)
+{
+    uint32_t fcs = dwt_read32bitoffsetreg(dw, SYS_CFG_ID, 0U) & ~((uint32_t)(SYS_CFG_DIS_FCS_TX_BIT_MASK | SYS_CFG_DIS_FCE_BIT_MASK));
+
+    if (((uint8_t)fcs_mode & (uint8_t)DWT_FCS_TX_OFF) != 0U)
+    {
+        fcs |= SYS_CFG_DIS_FCS_TX_BIT_MASK;
+    }
+
+    if (((uint8_t)fcs_mode & (uint8_t)DWT_FCS_RX_OFF) != 0U)
+    {
+        fcs |= SYS_CFG_DIS_FCE_BIT_MASK;
+    }
+
+    dwt_write32bitoffsetreg(dw, SYS_CFG_ID, 0U, fcs);
+
+    LOCAL_DATA(dw)->sys_cfg_dis_fce_bit_flag = (uint8_t)((fcs & SYS_CFG_DIS_FCE_BIT_MASK) != 0U ? 1U : 0U);
 }
 
 /*! ------------------------------------------------------------------------------------------------------------------
@@ -10533,7 +10592,7 @@ static int32_t _init_no_chan(struct dwchip_s *dw)
     dw->SPI->setfastrate();
     uint32_t dev_id;
 #define DW3XXX_DEVICE_ID 0
-    dwt_ioctl(dw, DWT_READ_REG, DW3XXX_DEVICE_ID , (void *)&dev_id);
+    dev_id = dwt_read32bitreg(dw, DW3XXX_DEVICE_ID);
 
     ull_setinterrupt(dw, dw->config->bitmask_lo, dw->config->bitmask_hi, dw->config->int_options);
     // Apply XTAL TRIM from the OTP or use the DEFAULT_XTAL_TRIM
@@ -10554,8 +10613,7 @@ static int32_t init(struct dwchip_s *dw)
     dw->SPI->setfastrate();
     uint32_t dev_id;
 #define DW3XXX_DEVICE_ID 0
-    (void)dwt_ioctl(dw, DWT_READ_REG, DW3XXX_DEVICE_ID, (void *)&dev_id);
-
+    dev_id = dwt_read32bitreg(dw, DW3XXX_DEVICE_ID);
     ret = ull_configure(dw, dw->config->rxtx_config->pdwCfg);
     ull_configuretxrf(dw, dw->config->rxtx_config->txConfig);
 
@@ -10654,9 +10712,9 @@ static const struct dwt_ops_s dw3720_ops = {
     .initialize = ull_initialise,
     .xfer = dwt_xfer3xxx,
     // ioctl()
-    .ioctl = dwt_ioctl, // chip-specific
+    //.ioctl = dwt_ioctl, // chip-specific
     .isr = ull_isr,
-    .dbg_fn = dwt_dbg_fn,
+    //.dbg_fn = dwt_dbg_fn,
 };
 
 static const struct dwt_mcps_ops_s dw3720_mcps_ops = {
@@ -10678,7 +10736,7 @@ static const struct dwt_mcps_ops_s dw3720_mcps_ops = {
     .read_from_device = ull_readfromdevice,
 #endif // WIN32
 
-    .ioctl = dwt_ioctl, // chip-specific
+    //.ioctl = dwt_ioctl, // chip-specific
 
     .mcps_compat = { .sys_status_and_or = prs_sys_status_and_or, .ack_enable = prs_ack_enable, .set_interrupt = ull_setinterrupt },
     .isr = ull_isr

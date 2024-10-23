@@ -634,11 +634,11 @@ struct dwt_ops_s
     int32_t (*initialize)(struct dwchip_s *dw, int32_t mode);
     void (*xfer)(struct dwchip_s *dw, uint32_t regFileID, uint16_t index, uint16_t length, uint8_t *buffer, const spi_modes_e mode);
 
-    int32_t (*ioctl)(struct dwchip_s *dw, dwt_ioctl_e fn, int32_t parm, void *ptr);
+    //int32_t (*ioctl)(struct dwchip_s *dw, dwt_ioctl_e fn, int32_t parm, void *ptr);
 
     void (*isr)(struct dwchip_s *dw);
 
-    void* (*dbg_fn)(struct dwchip_s* dw, dwt_ioctl_e fn, int32_t parm, void* ptr);
+    //void* (*dbg_fn)(struct dwchip_s* dw, dwt_ioctl_e fn, int32_t parm, void* ptr);
 };
 
 struct dwt_mcps_ops_s
@@ -667,7 +667,7 @@ struct dwt_mcps_ops_s
         void (*set_interrupt)(struct dwchip_s *dw, uint32_t bitmask_lo, uint32_t bitmask_hi, dwt_INT_options_e INT_options);
     } mcps_compat;
 
-    int32_t (*ioctl)(struct dwchip_s *dw, dwt_ioctl_e fn, int32_t parm, void *ptr);
+    //int32_t (*ioctl)(struct dwchip_s *dw, dwt_ioctl_e fn, int32_t parm, void *ptr);
 
     void (*isr)(struct dwchip_s *dw);
 };
