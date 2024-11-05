@@ -1,18 +1,18 @@
 # Zephyr Driver for Qorvo/Decawave DW3000
 
 This is a Zephyr module with a driver for Qorvo/Decawave DW3000. It contains the
-official driver from Qorvo and adds the necessary Zephyr bindings for GPIO,
-SPI and DTS. We tried to add only the minimal code to drive the DW3000, so it
-can be used in different projects and keep it as clean as possible from Decawave
-example code, port abstractions and the general mess around there.
+official source release of the "dwt_uwb_driver" driver from Qorvo 
+(version 08.02.02 from DW3_QM33_SDK_1.0.1.zip) and adds the necessary Zephyr
+bindings for GPIO, SPI and DTS. We tried to add only the minimal code to drive
+the DW3000, so it can be used in different projects and keep it as clean as
+possible from Decawave example code, port abstractions and the general mess
+around there. The driver files released from Qorvo have been modified to support
+only one DW3000 chip per board and we removed the big IOCTL function which is
+a unnecessary huge waste of space on embedded platforms.
 
-* The 'master' branch uses the last release(DW3xx Device Driver Version
-06.00.14) from Qorvo (DWM3001CDK-DW3_QM33_SDK-FreeRTOS_0_1_1.zip),
-which unfortunately is a binary-only library and only available for NRF targets.
-
-* There is an 'opensource' branch which contains the last open source release
-from Qorvo (DWS3000_Release_v1.1 / DW3000_API_C0_rev4p0 DW3000 C0 Device Driver
-Version 04.00.00), but this is older and not well tested any more.
+There is a similar project https://github.com/br101/dw3000-decadriver-source which
+contains the same driver and Zephyr support but also supports other platforms such
+as ESP32 and the old NRF SDK. Most of the development will go there first.
 
 The driver can be used by adding this repository as a zephyr module in
 `west.yml`, or by adding the module to CMakeLists.txt, e.g.:
@@ -69,6 +69,7 @@ And
 
 ```
 CONFIG_DW3000=y
+CONFIG_DW3000_CHIP_DW3000=y
 CONFIG_SPI=y
 CONFIG_GPIO=y
 ```
@@ -89,10 +90,13 @@ if (ret < 0) {
 	LOG_ERR("DWT Probe failed");
 	return;
 }
+
+ret = dwt_initialise(DWT_READ_OTP_PID | DWT_READ_OTP_LID | DWT_READ_OTP_BAT
+					 | DWT_READ_OTP_TMP);
 ```
 
 There is a separate project which uses this driver for the Qorvo/Decawave DWS3000
-examples here: https://github.com/br101/zephyr-dw3000-examples
+examples here: https://github.com/br101/zephyr-dw3000-examples (may be out of date).
 
 Thanks to https://github.com/foldedtoad/dwm3000 for an earlier Zephyr version of
 the driver + example code.
