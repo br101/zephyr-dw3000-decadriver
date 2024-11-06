@@ -8,6 +8,7 @@ zephyr_library_sources(
     platform/deca_port.c
     platform/dw3000_hw.c
     platform/dw3000_spi.c
+    platform/dw3000_spi_trace.c
     platform/deca_compat.c
     dwt_uwb_driver/deca_interface.c
     dwt_uwb_driver/deca_rsl.c

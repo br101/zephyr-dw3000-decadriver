@@ -1,7 +1,7 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/logging/log.h>
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include "deca_device_api.h"
 #include "dw3000_hw.h"
@@ -30,7 +30,7 @@ static const struct dw3000_config conf = {
 	.gpio_spi_pha = GPIO_DT_SPEC_GET_OR(DW_INST, spi_pha_gpios, {0}),
 };
 
-int dw3000_hw_init()
+int dw3000_hw_init(void)
 {
 	/* Reset */
 	if (conf.gpio_reset.port) {
@@ -105,6 +105,11 @@ void dw3000_hw_interrupt_disable(void)
 	if (conf.gpio_irq.port) {
 		gpio_pin_interrupt_configure_dt(&conf.gpio_irq, GPIO_INT_DISABLE);
 	}
+}
+
+bool dw3000_hw_interrupt_is_enabled(void)
+{
+	return true; // TODO
 }
 
 void dw3000_hw_fini(void)
