@@ -340,7 +340,7 @@ uint8_t ull_calcbandwidthadj(dwchip_t *dw, uint16_t target_count);
 static int32_t ull_run_pgfcal(dwchip_t *dw);
 int32_t ull_pgf_cal(dwchip_t *dw, int32_t ldoen);
 static void ull_setplenfine(dwchip_t *dw, uint8_t preambleLength);
-static uint16_t ull_getframelength(dwchip_t *dw, uint8_t *rng_bit);
+uint16_t ull_getframelength(dwchip_t *dw, uint8_t *rng_bit);
 int32_t ull_check_dev_id(dwchip_t *dw);
 static void ull_enable_rftx_blocks(dwchip_t *dw);
 static void ull_disable_rftx_blocks(dwchip_t *dw);
