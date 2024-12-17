@@ -20,7 +20,7 @@
 
 #if CONFIG_DW3000_CHIP_DW3720
 #include "dw3720/dw3720_deca_regs.h"
-#include "dw3720/df3720_deca_vals.h"
+#include "dw3720/dw3720_deca_vals.h"
 #elif CONFIG_DW3000_CHIP_DW3000
 #include "dw3000/dw3000_deca_regs.h"
 #include "dw3000/dw3000_deca_vals.h"

@@ -360,7 +360,7 @@ void ull_dis_otp_ips(dwchip_t *dw, int mode);
 void ull_setrxtimeout(dwchip_t *dw, uint32_t on_time);
 void ull_setpreambledetecttimeout(dwchip_t *dw, uint16_t timeout);
 static void ull_aon_write(dwchip_t *dw, uint16_t aon_address, uint8_t aon_write_data);
-static uint8_t ull_aon_read(dwchip_t *dw, uint16_t aon_address);
+uint8_t ull_aon_read(dwchip_t *dw, uint16_t aon_address);
 float ull_convertrawtemperature(dwchip_t *dw, uint8_t raw_temp);
 uint16_t ull_readtempvbat(dwchip_t *dw);
 static uint16_t ull_readsar(dwchip_t *dw, uint8_t input_mux, uint8_t attn);
