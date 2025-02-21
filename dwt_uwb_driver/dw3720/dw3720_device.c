@@ -130,6 +130,7 @@ typedef struct
  */
 static const uint16_t sts_length_factors[STS_LEN_SUPPORTED] = { 1024, 1448, 2048, 2896, 4096, 5793, 8192 };
 
+#if IOCTL_ENABLE
 /* regNames contains register name, value pairs which are used for debug output/logging by external applications e.g. DecaRanging. */
 static register_name_add_t regNames[] =
 {
@@ -152,6 +153,7 @@ static register_name_add_t regNames[] =
 #endif
     {NULL, 0}
 };
+#endif
 
 // -------------------------------------------------------------------------------------------------------------------
 #define FORCE_CLK_SYS_TX      (1)
@@ -366,15 +368,19 @@ uint16_t ull_readtempvbat(dwchip_t *dw);
 static uint16_t ull_readsar(dwchip_t *dw, uint8_t input_mux, uint8_t attn);
 static uint8_t ull_pll_ch5_auto_cal(dwchip_t *dw, uint32_t coarse_code, uint16_t sleep_us, uint8_t steps, uint8_t *p_num_steps_lock, int8_t temperature);
 static uint8_t ull_pll_ch9_auto_cal(dwchip_t *dw, uint32_t coarse_code, uint16_t sleep_us, uint8_t steps, uint8_t *p_num_steps_lock);
+#if IOCTL_ENABLE
 static void ull_capture_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc);
 static void ull_read_adc_samples(dwchip_t *dw, dwt_capture_adc_t *capture_adc);
 static void ull_enable_rf_rx(dwchip_t *dw, uint8_t rx_ab);
 static void ull_disable_rf_rx(dwchip_t *dw);
+#endif
 void ull_forcetrxoff(dwchip_t *dw);
 static void ull_timers_reset(dwchip_t *dw);
+#if IOCTL_ENABLE
 static void ull_update_ststhreshold(dwchip_t *dw, uint8_t rx_pcode, uint8_t stsBlocks);
 static void ull_setstslength_s(dwchip_t *dw, uint8_t sts_len);
 static void ull_setstslength(dwchip_t *dw, dwt_sts_lengths_e sts_len);
+#endif
 static inline uint8_t ull_getrxcode(dwchip_t *dw);
 
 /* Read current RX code. */
@@ -383,6 +389,7 @@ static inline uint8_t ull_getrxcode(dwchip_t *dw)
     return (uint8_t)((dwt_read32bitoffsetreg(dw, CHAN_CTRL_ID, 0) & CHAN_CTRL_RX_PCODE_BIT_MASK) >> (uint32_t)CHAN_CTRL_RX_PCODE_BIT_OFFSET);
 }
 
+#if IOCTL_ENABLE
 /* Update current STS threshold. */
 static void ull_update_ststhreshold(dwchip_t *dw, uint8_t rx_pcode, uint8_t stsBlocks)
 {
@@ -437,6 +444,7 @@ static void ull_wakeup_ic(dwchip_t *dw)
     (void)dw;
 #endif
 }
+#endif
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief  this function is used to read/write to the DW3720 device registers
@@ -1297,6 +1305,7 @@ void ull_setlnapamode(dwchip_t *dw, int32_t lna_pa)
     dwt_write32bitreg(dw, GPIO_MODE_ID, gpio_mode);
 }
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This is used to return the read OTP revision
  *
@@ -1313,6 +1322,7 @@ static uint8_t ull_otprevision(dwchip_t *dw)
 {
     return LOCAL_DATA(dw)->otprev;
 }
+#endif
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This function overrides the temperature to be used for PLL calibration of the device.
@@ -1689,6 +1699,7 @@ void ull_restoreconfig(dwchip_t *dw, int32_t full_restore)
     }
 }
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This function configures STS mode: e.g. DWT_STS_MODE_OFF, DWT_STS_MODE_1 etc
  * The dwt_configure should be called prior to this to configure other parameters
@@ -1720,6 +1731,7 @@ static void ull_configurestsmode(dwchip_t *dw, uint8_t stsMode)
         dwt_write32bitoffsetreg(dw, DTUNE3_ID, 0U, PD_THRESH_DEFAULT);
     }
 }
+#endif
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This function will configure the PDOA mode.
@@ -3833,6 +3845,7 @@ void ull_readrxtimestampunadj(dwchip_t *dw, uint8_t *timestamp)
     ull_readfromdevice(dw, RX_TIME_RAW_ID, 0U, RX_TIME_RX_STAMP_LEN - 1U, &timestamp[1]);
 }
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This is used to read the RX timestamp (adjusted time of arrival) w.r.t. Ipatov CIR
  *
@@ -3861,6 +3874,7 @@ static void ull_readrxtimestamp_ipatov(dwchip_t *dw, uint8_t *timestamp)
         break;
     }
 }
+#endif
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This is used to read the RX timestamp (adjusted time of arrival) w.r.t. STS CIR
@@ -4396,6 +4410,7 @@ void ull_configuresleepcnt(dwchip_t *dw, uint16_t sleepcnt)
     ull_aon_write(dw, (uint16_t)AON_SLPCNT_HI, (uint8_t)(sleepcnt >> 8U));
 }
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  *
  * @brief This function puts the device into deep sleep or sleep. dwt_configuresleep() should be called first
@@ -4412,6 +4427,7 @@ static void ull_enter_sleep_fcmd(dwchip_t *dw)
 {
     dwt_writefastCMD(dw, CMD_ENTER_SLEEP);
 }
+#endif
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief calibrates the local oscillator as its frequency can vary between 15 and 34kHz depending on temp and voltage
@@ -8511,6 +8527,7 @@ int32_t ull_xtal_temperature_compensation(dwchip_t *dw,
     }
 }
 
+#if IOCTL_ENABLE
 /** @brief This function captures the ADC samples on receiving a signal
  *
  * @param capture_adc - this is the pointer to the structure into which to read the data.
@@ -8793,6 +8810,7 @@ static void ull_disable_rf_rx(dwchip_t *dw)
     // Disable RF blocks for RX (configure RF_ENABLE_ID reg)
     dwt_write32bitreg(dw, RF_ENABLE_ID, 0x0);
 }
+#endif
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief Retrieve the tx power look-up table corresponding to current configuration.
@@ -8849,6 +8867,7 @@ static int32_t OPTSPEED ull_get_txp_lut(uint8_t channel, uint8_t bias, tx_adj_lu
     return (int32_t)ret_val;
 }
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This API checks if the input indexes for frame fits within the range of the reference lut.
  *        If the indexes fits, then the ref_lut will be stored in the corresponding lut pointers.
@@ -9028,6 +9047,7 @@ static int32_t OPTSPEED ull_calculate_linear_tx_setting(struct dwchip_s *dw, int
 
     return (int32_t)DWT_SUCCESS;
 }
+#endif
 
 /* The encoding of the TX power is composed of two parts:
  *  - 2 LSB bits: coarse value
@@ -9240,6 +9260,7 @@ void ull_configtxrxfcs(struct dwchip_s *dw, dwt_fcs_mode_e fcs_mode)
     LOCAL_DATA(dw)->sys_cfg_dis_fce_bit_flag = (uint8_t)((fcs & SYS_CFG_DIS_FCE_BIT_MASK) != 0U ? 1U : 0U);
 }
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief this a chip-specific implementation of ioctl()
  *
@@ -10581,6 +10602,7 @@ static void* dwt_dbg_fn(dwchip_t* dw, dwt_ioctl_e fn, int32_t parm, void* ptr)
 
     return ret;
 }
+#endif
 
 #ifdef AUTO_DW3300Q_DRIVER
 
@@ -10711,10 +10733,14 @@ static const struct dwt_ops_s dw3720_ops = {
     .rx_enable = ull_rxenable,
     .initialize = ull_initialise,
     .xfer = dwt_xfer3xxx,
-    // ioctl()
-    //.ioctl = dwt_ioctl, // chip-specific
+#if IOCTL_ENABLE
+     ioctl()
+    .ioctl = dwt_ioctl, // chip-specific
+#endif
     .isr = ull_isr,
-    //.dbg_fn = dwt_dbg_fn,
+#if IOCTL_ENABLE
+    .dbg_fn = dwt_dbg_fn,
+#endif
 };
 
 static const struct dwt_mcps_ops_s dw3720_mcps_ops = {
@@ -10736,7 +10762,9 @@ static const struct dwt_mcps_ops_s dw3720_mcps_ops = {
     .read_from_device = ull_readfromdevice,
 #endif // WIN32
 
-    //.ioctl = dwt_ioctl, // chip-specific
+#if IOCTL_ENABLE
+    .ioctl = dwt_ioctl, // chip-specific
+#endif
 
     .mcps_compat = { .sys_status_and_or = prs_sys_status_and_or, .ack_enable = prs_ack_enable, .set_interrupt = ull_setinterrupt },
     .isr = ull_isr

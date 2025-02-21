@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define IOCTL_ENABLE 0
 #define OPTSPEED __attribute__((optimize("O3")))
 
 #if 0
@@ -126,6 +127,7 @@ typedef struct dwt_local_data_s dwt_local_data_t;
  */
 static const uint16_t sts_length_factors[STS_LEN_SUPPORTED] = { 1024U, 1448U, 2048U, 2896U, 4096U, 5793U, 8192U };
 
+#if IOCTL_ENABLE
 /* regNames contains register name, value pairs which are used for debug output/logging by  externa applications e.g. DecaRanging. */
 static register_name_add_t regNames[] =
 {
@@ -147,6 +149,7 @@ static register_name_add_t regNames[] =
 #endif
     { NULL, 0 }
 };
+#endif
 
 // -------------------------------------------------------------------------------------------------------------------
 #define FORCE_CLK_SYS_TX      1
@@ -352,9 +355,11 @@ uint16_t ull_readtempvbat(dwchip_t *dw);
 static uint16_t ull_readsar(dwchip_t *dw, uint8_t input_mux, uint8_t attn);
 static uint8_t ull_pll_ch5_auto_cal(dwchip_t *dw, uint32_t coarse_code, uint16_t sleep_us, uint8_t steps, uint8_t *p_num_steps_lock, int8_t temperature);
 static uint8_t ull_pll_ch9_auto_cal(dwchip_t *dw, uint32_t coarse_code, uint16_t sleep_us, uint8_t steps, uint8_t *p_num_steps_lock);
+#if IOCTL_ENABLE
 static void ull_update_ststhreshold(dwchip_t *dw, uint8_t rx_pcode, uint8_t stsBlocks);
 static void ull_setstslength_s(dwchip_t *dw, uint8_t sts_len);
 static void ull_setstslength(dwchip_t *dw, dwt_sts_lengths_e sts_len);
+#endif
 static inline uint8_t ull_getrxcode(dwchip_t *dw);
 
 /* Read current RX code. */
@@ -363,6 +368,7 @@ static inline uint8_t ull_getrxcode(dwchip_t *dw)
     return (uint8_t)((dwt_read32bitoffsetreg(dw, CHAN_CTRL_ID, 0) & CHAN_CTRL_RX_PCODE_BIT_MASK) >> (uint32_t)CHAN_CTRL_RX_PCODE_BIT_OFFSET);
 }
 
+#if IOCTL_ENABLE
 /* Update current STS threshold. */
 static void ull_update_ststhreshold(dwchip_t *dw, uint8_t rx_pcode, uint8_t stsBlocks)
 {
@@ -399,8 +405,10 @@ void ull_setstslength(dwchip_t *dw, dwt_sts_lengths_e sts_len)
     ull_setstslength_s(dw, (uint8_t)sts_len);
     ull_update_ststhreshold(dw, ull_getrxcode(dw), (uint8_t)sts_len);
 }
+#endif
 
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief  This function wakeup device by an IO pin. DW3000 SPI_CS or WAKEUP pins can be used for this.
  *
@@ -418,6 +426,7 @@ static void ull_wakeup_ic(dwchip_t *dw)
     (void)dw;
 #endif
 }
+#endif
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief  this function is used to read/write to the DW3000 device registers
@@ -1390,6 +1399,7 @@ uint8_t ull_geticrefvolt(dwchip_t *dw)
     return LOCAL_DATA(dw)->vBatP;
 }
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This is used to return the read T measured @ 22 C value recorded in OTP address 0x9 (VTEMP_ADDRESS)
  *
@@ -1406,6 +1416,7 @@ static uint8_t ull_geticreftemp(dwchip_t *dw)
 {
     return LOCAL_DATA(dw)->tempP;
 }
+#endif
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief This is used to return the read part ID of the device
@@ -8045,6 +8056,7 @@ void ull_configtxrxfcs(struct dwchip_s *dw, dwt_fcs_mode_e fcs_mode)
     LOCAL_DATA(dw)->sys_cfg_dis_fce_bit_flag = ((fcs & SYS_CFG_DIS_FCE_BIT_MASK) != 0UL ? 1U : 0U);
 }
 
+#if IOCTL_ENABLE
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief this a chip-specific implementation of ioctl()
  *
@@ -9197,6 +9209,7 @@ static int32_t dwt_ioctl(dwchip_t *dw, dwt_ioctl_e fn, int32_t parm, void *ptr)
     return (ret);
 }
 
+
 /*! ------------------------------------------------------------------------------------------------------------------
  * @brief this a chip-specific implementation of dbg_fn()
  *
@@ -9225,6 +9238,7 @@ static void* dwt_dbg_fn(dwchip_t* dw, dwt_ioctl_e fn, int32_t parm, void* ptr)
 
     return (ret);
 }
+#endif
 
 #ifdef AUTO_DW3300Q_DRIVER
 
@@ -9356,10 +9370,14 @@ static const struct dwt_ops_s dw3000_ops = {
     .rx_enable = ull_rxenable,
     .initialize = ull_initialise,
     .xfer = dwt_xfer3xxx,
-    // ioctl()
-    //.ioctl = dwt_ioctl, // chip-specific
+#if IOCTL_ENABLE
+     ioctl()
+    .ioctl = dwt_ioctl, // chip-specific
+#endif
     .isr = ull_isr,
-    //.dbg_fn = dwt_dbg_fn,
+#if IOCTL_ENABLE
+    .dbg_fn = dwt_dbg_fn,
+#endif
 };
 
 static const struct dwt_mcps_ops_s dw3000_mcps_ops = {
@@ -9380,7 +9398,9 @@ static const struct dwt_mcps_ops_s dw3000_mcps_ops = {
     .write_to_device = ull_writetodevice,
     .read_from_device = ull_readfromdevice,
 #endif
-    //.ioctl = dwt_ioctl, // chip-specific
+#if IOCTL_ENABLE
+    .ioctl = dwt_ioctl, // chip-specific
+#endif
 
     .mcps_compat = {
         .sys_status_and_or = prs_sys_status_and_or,
