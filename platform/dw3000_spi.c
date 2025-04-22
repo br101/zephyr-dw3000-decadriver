@@ -8,6 +8,7 @@
 #include <zephyr/drivers/spi.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/pm/device.h>
 
 #include "dw3000_spi.h"
 
@@ -44,8 +45,8 @@ int dw3000_spi_init(void)
 	spi_cfgs[0].frequency = 2000000;
 
 	/* High SPI clock speed: increase for boards which support higher speeds */
-#if (CONFIG_SOC_NRF52833 || CONFIG_SOC_NRF52840 || CONFIG_SOC_NRF5340_CPUAPP) \
-    && CONFIG_SHIELD_QORVO_DWS3000 && (CONFIG_DW3000_SPI_MAX_MHZ > 16)
+#if (CONFIG_SOC_NRF52833 || CONFIG_SOC_NRF52840 || CONFIG_SOC_NRF5340_CPUAPP)  \
+	&& CONFIG_SHIELD_QORVO_DWS3000 && (CONFIG_DW3000_SPI_MAX_MHZ > 16)
 	/* Due to the wiring of the Nordic Development Boards and the DWS3000
 	 * Arduino shield it is not possible to use more than 16MHz */
 	spi_cfgs[1].frequency = 16000000;
@@ -63,6 +64,24 @@ int dw3000_spi_init(void)
 		LOG_INF("DW3000 (max %dMHz)", spi_cfgs[1].frequency / 1000000);
 	}
 
+#if CONFIG_PM_DEVICE
+	enum pm_device_state pstate;
+	int rc = pm_device_state_get(spi, &pstate);
+	if (rc) {
+		LOG_ERR("PM state get %d", rc);
+	}
+
+	if (pstate != PM_DEVICE_STATE_ACTIVE) {
+		rc = pm_device_action_run(spi, PM_DEVICE_ACTION_RESUME);
+		if (rc) {
+			LOG_ERR("PM resume %d", rc);
+		}
+	}
+#endif
+
+	// initialized correctly at boot but after fini we need to reconfigure
+	gpio_pin_configure_dt(&spi_cfg->cs.gpio, GPIO_OUTPUT_HIGH);
+
 	return 0;
 }
 
@@ -78,12 +97,19 @@ void dw3000_spi_speed_fast(void)
 
 void dw3000_spi_fini(void)
 {
-	// TODO
+	// TODO: I can't find a SPI uninit function in Zephyr
+#if CONFIG_PM_DEVICE
+	int rc = pm_device_action_run(spi, PM_DEVICE_ACTION_SUSPEND);
+	if (rc) {
+		LOG_ERR("PM FINI suspend %d", rc);
+	}
+#endif
+	gpio_pin_configure_dt(&spi_cfg->cs.gpio, GPIO_DISCONNECTED);
 }
 
 int32_t dw3000_spi_write_crc(uint16_t headerLength, const uint8_t* headerBuffer,
-						 uint16_t bodyLength, const uint8_t* bodyBuffer,
-						 uint8_t crc8)
+							 uint16_t bodyLength, const uint8_t* bodyBuffer,
+							 uint8_t crc8)
 {
 	const struct spi_buf tx_buf[3] = {
 		{
@@ -108,7 +134,7 @@ int32_t dw3000_spi_write_crc(uint16_t headerLength, const uint8_t* headerBuffer,
 }
 
 int32_t dw3000_spi_write(uint16_t headerLength, const uint8_t* headerBuffer,
-					 uint16_t bodyLength, const uint8_t* bodyBuffer)
+						 uint16_t bodyLength, const uint8_t* bodyBuffer)
 {
 	const struct spi_buf tx_buf[2] = {
 		{
@@ -129,7 +155,7 @@ int32_t dw3000_spi_write(uint16_t headerLength, const uint8_t* headerBuffer,
 }
 
 int32_t dw3000_spi_read(uint16_t headerLength, uint8_t* headerBuffer,
-					uint16_t readLength, uint8_t* readBuffer)
+						uint16_t readLength, uint8_t* readBuffer)
 {
 	const struct spi_buf tx_buf = {
 		.buf = headerBuffer,
