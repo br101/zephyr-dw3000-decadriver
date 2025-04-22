@@ -65,7 +65,9 @@ int dw3000_hw_init(void)
 
 static void dw3000_hw_isr_work_handler(struct k_work* item)
 {
-	dwt_isr();
+	while (gpio_pin_get_dt(&conf.gpio_irq)) {
+		dwt_isr();
+	}
 }
 
 static void dw3000_hw_isr(const struct device* dev, struct gpio_callback* cb,
@@ -115,6 +117,17 @@ bool dw3000_hw_interrupt_is_enabled(void)
 void dw3000_hw_fini(void)
 {
 	// TODO
+	if (conf.gpio_irq.port) {
+		gpio_pin_interrupt_configure_dt(&conf.gpio_irq, GPIO_INT_DISABLE);
+		gpio_pin_configure_dt(&conf.gpio_irq, GPIO_DISCONNECTED);
+	}
+	if (conf.gpio_reset.port) {
+		gpio_pin_configure_dt(&conf.gpio_reset, GPIO_DISCONNECTED);
+	}
+	if (conf.gpio_wakeup.port) {
+		gpio_pin_configure_dt(&conf.gpio_wakeup, GPIO_DISCONNECTED);
+	}
+
 	dw3000_spi_fini();
 }
 
