@@ -2,7 +2,7 @@
 
 This is a Zephyr module with a driver for Qorvo/Decawave DW3000. It contains the
 official source release of the "dwt_uwb_driver" driver from Qorvo 
-(version 08.02.02 from DW3_QM33_SDK_1.0.1.zip) and adds the necessary Zephyr
+(version 08.02.02 from DW3_QM33_SDK_1.0.2.zip) and adds the necessary Zephyr
 bindings for GPIO, SPI and DTS. We tried to add only the minimal code to drive
 the DW3000, so it can be used in different projects and keep it as clean as
 possible from Decawave example code, port abstractions and the general mess
@@ -12,7 +12,7 @@ a unnecessary huge waste of space on embedded platforms.
 
 There is a similar project https://github.com/br101/dw3000-decadriver-source which
 contains the same driver and Zephyr support but also supports other platforms such
-as ESP32 and the old NRF SDK. Most of the development will go there first.
+as ESP32 and the old NRF SDK.
 
 The driver can be used by adding this repository as a zephyr module in
 `west.yml`, or by adding the module to CMakeLists.txt, e.g.:
