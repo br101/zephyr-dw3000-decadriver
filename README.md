@@ -10,10 +10,6 @@ around there. The driver files released from Qorvo have been modified to support
 only one DW3000 chip per board and we removed the big IOCTL function which is
 a unnecessary huge waste of space on embedded platforms.
 
-There is a similar project https://github.com/br101/dw3000-decadriver-source which
-contains the same driver and Zephyr support but also supports other platforms such
-as ESP32 and the old NRF SDK.
-
 The driver can be used by adding this repository as a zephyr module in
 `west.yml`, or by adding the module to CMakeLists.txt, e.g.:
 
@@ -65,7 +61,7 @@ Then you only need to add a `decawave,dw3000` compatible device to your .dts, e.
 };
 ```
 
-And
+And configure it in prj.conf:
 
 ```
 CONFIG_DW3000=y
@@ -74,26 +70,24 @@ CONFIG_SPI=y
 CONFIG_GPIO=y
 ```
 
-After that you can use the functions defined in `dw3000.h` and `deca_device_api.h`,
-which would usually be like:
+## Usage and first steps
+
+This is a minimal code fragment to check the basic functionality (reading the device ID).
 
 ```
-#include <dw3000.h>
-...
 dw3000_hw_init();
 dw3000_hw_reset();
-dw3000_hw_init_interrupt();
-dw3000_spi_speed_fast();
-
-int ret = dwt_probe((struct dwt_probe_s*)&dw3000_probe_interf);
-if (ret < 0) {
-	LOG_ERR("DWT Probe failed");
-	return;
-}
-
-ret = dwt_initialise(DWT_READ_OTP_PID | DWT_READ_OTP_LID | DWT_READ_OTP_BAT
-					 | DWT_READ_OTP_TMP);
+uint32_t dev_id = dwt_readdevid();
+LOG_INF("DEVID %x", devid);
 ```
+
+## Next steps
+
+You can use this library to write your own code directly using the API provided by `decadriver` or you could also include my higher level library [libdeca](https://github.com/br101/libdeca) which adds some convenient functions, proper IRQ handling, and a simple implementation of two way ranging (TWR).
+
+There is a similar project https://github.com/br101/dw3000-decadriver-source which
+contains the same driver and Zephyr support but also supports other platforms such
+as ESP32 and the old NRF SDK.
 
 There is a separate project which uses this driver for the Qorvo/Decawave DWS3000
 examples here: https://github.com/br101/zephyr-dw3000-examples (may be out of date).
