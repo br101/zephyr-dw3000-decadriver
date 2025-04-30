@@ -14,10 +14,6 @@ menuconfig DW3000
 			bool "DW3720/QM33xx"
 	endchoice
 
-	config DW3000_SPI_MAX_MHZ
-        int "DW3000 Max SPI speed in MHz"
-        default 32
-
 module = DW3000
 module-str = dw3000
 source "subsys/logging/Kconfig.template.log_config"

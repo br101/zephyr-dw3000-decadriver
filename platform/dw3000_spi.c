@@ -41,19 +41,11 @@ int dw3000_spi_init(void)
 		spi_cfgs[i].operation = SPI_WORD_SET(8);
 	}
 
-	/* Slow SPI clock speed: 2MHz */
+	/* SPI clock speed: Slow 2MHz, Max clock speed from DTS
+	 * We have to keep two different config structures due to the way the SPI
+	 * driver works */
 	spi_cfgs[0].frequency = 2000000;
-
-	/* High SPI clock speed: increase for boards which support higher speeds */
-#if (CONFIG_SOC_NRF52833 || CONFIG_SOC_NRF52840 || CONFIG_SOC_NRF5340_CPUAPP)  \
-	&& CONFIG_SHIELD_QORVO_DWS3000 && (CONFIG_DW3000_SPI_MAX_MHZ > 16)
-	/* Due to the wiring of the Nordic Development Boards and the DWS3000
-	 * Arduino shield it is not possible to use more than 16MHz */
-	spi_cfgs[1].frequency = 16000000;
-#else
-	spi_cfgs[1].frequency = CONFIG_DW3000_SPI_MAX_MHZ * 1000000;
-#endif
-
+	spi_cfgs[1].frequency = DT_PROP(DW_INST, spi_max_frequency);
 	spi_cfg = &spi_cfgs[0];
 
 	spi = DEVICE_DT_GET(DW_SPI);
@@ -61,7 +53,7 @@ int dw3000_spi_init(void)
 		LOG_ERR("DW3000 SPI binding failed");
 		return -1;
 	} else {
-		LOG_INF("DW3000 (max %dMHz)", spi_cfgs[1].frequency / 1000000);
+		LOG_INF("DW3000 SPI (max %dMHz)", spi_cfgs[1].frequency / 1000000);
 	}
 
 #if CONFIG_PM_DEVICE

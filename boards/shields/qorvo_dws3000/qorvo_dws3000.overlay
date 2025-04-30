@@ -10,7 +10,9 @@
 
     dws3000@0 {
         compatible = "decawave,dw3000";
-        spi-max-frequency = <1000000>;
+        /* Due to the wiring of the Nordic Development Boards and the DWS3000
+	     * Arduino shield it is not possible to use more than 16MHz */
+        spi-max-frequency = <16000000>;
         reg = <0>;
         wakeup-gpios  = <&arduino_header 15 GPIO_ACTIVE_HIGH>; /* D9 */
         irq-gpios     = <&arduino_header 14 GPIO_ACTIVE_HIGH>; /* D8 */
