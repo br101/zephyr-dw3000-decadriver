@@ -23,10 +23,16 @@ to your west build command (you may need to set BOARD_ROOT as well).
 For custom boards, you only need to add a `decawave,dw3000` compatible device to
 your .dts file. Here is an example:
 
+Note that using `nordic,nrf-spi` (SPI without DMA) instead of `nordic,nrf-spim`
+(SPI with EasyDMA) may achieve better results (faster read and writes), as most
+of the SPI transactions to the DW3000 are very short and DMA has some overhead
+for setting up. If you want to transfer large amounts of data SPIM may be faster
+though.
+
 ```
 &spi0 {
 	status = "okay";
-	compatible = "nordic,nrf-spim";
+	compatible = "nordic,nrf-spi";
 	cs-gpios = <&gpio0 29 GPIO_ACTIVE_LOW>;
 
 	pinctrl-0 = <&spi0_default>;
