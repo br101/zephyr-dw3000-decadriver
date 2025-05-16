@@ -10,6 +10,8 @@ zephyr_library_sources(
     platform/dw3000_spi.c
     platform/dw3000_spi_trace.c
     platform/deca_compat.c
+    platform/config_options.c
+    platform/shared_functions.c
     dwt_uwb_driver/deca_interface.c
     dwt_uwb_driver/deca_rsl.c
     dwt_uwb_driver/lib/qmath/src/qmath.c
