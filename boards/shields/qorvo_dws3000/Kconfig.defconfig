@@ -12,7 +12,4 @@ config GPIO
 config DW3000
 	default y
 
-config UWB_SLEEP_ENABLED
-	default y
-
 endif # SHIELD_SHIELD_QORVO_DWS3000
