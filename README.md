@@ -105,3 +105,9 @@ examples here: https://github.com/br101/zephyr-dw3000-examples (may be out of da
 
 Thanks to https://github.com/foldedtoad/dwm3000 for an earlier Zephyr version of
 the driver + example code.
+
+## Licenses
+
+The driver code from Qorvo is licensed according to their own license: https://github.com/br101/zephyr-dw3000-decadriver/blob/master/dwt_uwb_driver/LICENSES/LicenseRef-QORVO-2.txt.
+
+My own code is under the ISC license: https://github.com/br101/zephyr-dw3000-decadriver/blob/master/LICENSE.txt
