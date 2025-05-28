@@ -82,11 +82,31 @@ CONFIG_GPIO=y
 This is a minimal code fragment to check the basic functionality (reading the
 device ID).
 
-```
-dw3000_hw_init();
-dw3000_hw_reset();
-uint32_t dev_id = dwt_readdevid();
-LOG_INF("DEVID %x", devid);
+```c
+#include <zephyr/kernel.h>
+#include <zephyr/types.h>
+
+#include <deca_device_api.h>
+#include <deca_probe_interface.h>
+#include <dw3000_hw.h>
+
+#include <stdio.h>
+
+int main() {
+    uint32_t dev_id;
+
+    dw3000_hw_init();
+    dw3000_hw_reset();
+
+    k_sleep(K_MSEC(2000));
+
+    dwt_probe((struct dwt_probe_s *)&dw3000_probe_interf);
+
+    dev_id = dwt_readdevid();
+    printf("Device ID: %x\n", dev_id);
+
+    return 0;
+}
 ```
 
 ## Next steps
