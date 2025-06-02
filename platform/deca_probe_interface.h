@@ -15,6 +15,15 @@
 
 #include "deca_device_api.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 extern const struct dwt_probe_s dw3000_probe_interf;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
