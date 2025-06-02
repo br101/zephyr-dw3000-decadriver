@@ -1,0 +1,8 @@
+# Qorvo DWM3001 board configuration
+
+# Copyright (c) 2022 Sven Hoyer
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_QORVO_DWM3001CDK
+	bool "Qorvo DWM3001CDK"
+	depends on SOC_NRF52833_QIAA
