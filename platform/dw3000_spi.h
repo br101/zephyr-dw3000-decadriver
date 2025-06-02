@@ -7,6 +7,11 @@
 #define CONFIG_DW3000_SPI_TRACE 0
 #endif
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 int dw3000_spi_init(void);
 void dw3000_spi_fini(void);
 void dw3000_spi_wakeup(void);
@@ -21,5 +26,9 @@ int32_t dw3000_spi_write_crc(uint16_t headerLength, const uint8_t* headerBuffer,
 							 uint8_t crc8);
 
 void dw3000_spi_trace_output(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
