@@ -122,7 +122,14 @@ int32_t dw3000_spi_write_crc(uint16_t headerLength, const uint8_t* headerBuffer,
 		.count = ARRAY_SIZE(tx_buf),
 	};
 
-	return spi_transceive(spi, spi_cfg, &tx, NULL);
+	struct k_poll_signal sig;
+	k_poll_signal_init(&sig);
+	int ret = spi_transceive_signal(spi, spi_cfg, &tx, NULL, &sig);
+
+	struct k_poll_event evt = K_POLL_EVENT_INITIALIZER(K_POLL_TYPE_SIGNAL, K_POLL_MODE_NOTIFY_ONLY, &sig);
+	k_poll(&evt, 1, K_FOREVER);
+
+	return ret;
 }
 
 int32_t dw3000_spi_write(uint16_t headerLength, const uint8_t* headerBuffer,
@@ -143,7 +150,14 @@ int32_t dw3000_spi_write(uint16_t headerLength, const uint8_t* headerBuffer,
 		.count = ARRAY_SIZE(tx_buf),
 	};
 
-	return spi_transceive(spi, spi_cfg, &tx, NULL);
+	struct k_poll_signal sig;
+	k_poll_signal_init(&sig);
+	int ret = spi_transceive_signal(spi, spi_cfg, &tx, NULL, &sig);
+
+	struct k_poll_event evt = K_POLL_EVENT_INITIALIZER(K_POLL_TYPE_SIGNAL, K_POLL_MODE_NOTIFY_ONLY, &sig);
+	k_poll(&evt, 1, K_FOREVER);
+
+	return ret;
 }
 
 int32_t dw3000_spi_read(uint16_t headerLength, uint8_t* headerBuffer,
@@ -172,7 +186,12 @@ int32_t dw3000_spi_read(uint16_t headerLength, uint8_t* headerBuffer,
 		.count = ARRAY_SIZE(rx_buf),
 	};
 
-	int ret = spi_transceive(spi, spi_cfg, &tx, &rx);
+	struct k_poll_signal sig;
+	k_poll_signal_init(&sig);
+	int ret = spi_transceive_signal(spi, spi_cfg, &tx, &rx, &sig);
+
+	struct k_poll_event evt = K_POLL_EVENT_INITIALIZER(K_POLL_TYPE_SIGNAL, K_POLL_MODE_NOTIFY_ONLY, &sig);
+	k_poll(&evt, 1, K_FOREVER);
 
 #if (CONFIG_SOC_NRF52840_QIAA)
 	/*
