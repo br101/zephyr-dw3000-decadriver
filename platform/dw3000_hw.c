@@ -92,7 +92,7 @@ void dw3000_init_workqueue(void) {
 	k_work_queue_start(&dw3000_work_q,
 					dw3000_stack_area,
 					K_THREAD_STACK_SIZEOF(dw3000_stack_area),
-					K_PRIO_PREEMPT(0),
+					K_PRIO_COOP(0),
 					&dw3000_wq_config);
 
     k_work_init(&dw3000_isr_work, dw3000_hw_isr_work_handler);
