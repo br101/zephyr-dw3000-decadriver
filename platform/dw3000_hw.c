@@ -11,12 +11,6 @@ LOG_MODULE_REGISTER(dw3000, CONFIG_DW3000_LOG_LEVEL);
 
 #define DW_INST DT_INST(0, decawave_dw3000)
 
-K_THREAD_STACK_DEFINE(dw3000_stack_area, 1024);
-static struct k_work_q dw3000_work_q;
-static const struct k_work_queue_config dw3000_wq_config = {
-    .name = "dw3000_wq"
-};
-
 static struct gpio_callback gpio_cb;
 static struct k_work dw3000_isr_work;
 
@@ -79,29 +73,13 @@ static void dw3000_hw_isr_work_handler(struct k_work* item)
 static void dw3000_hw_isr(const struct device* dev, struct gpio_callback* cb,
 						  uint32_t pins)
 {
-	k_work_submit_to_queue(&dw3000_work_q, &dw3000_isr_work);
-}
-
-void dw3000_init_workqueue(void) {
-    static bool initialized = false;
-    if (initialized) {
-        return;
-    }
-    initialized = true;
-
-	k_work_queue_start(&dw3000_work_q,
-					dw3000_stack_area,
-					K_THREAD_STACK_SIZEOF(dw3000_stack_area),
-					K_PRIO_COOP(0),
-					&dw3000_wq_config);
-
-    k_work_init(&dw3000_isr_work, dw3000_hw_isr_work_handler);
+	k_work_submit(&dw3000_isr_work);
 }
 
 int dw3000_hw_init_interrupt(void)
 {
 	if (conf.gpio_irq.port) {
-		dw3000_init_workqueue();
+		k_work_init(&dw3000_isr_work, dw3000_hw_isr_work_handler);
 
 		gpio_pin_configure_dt(&conf.gpio_irq, GPIO_INPUT);
 		gpio_init_callback(&gpio_cb, dw3000_hw_isr, BIT(conf.gpio_irq.pin));

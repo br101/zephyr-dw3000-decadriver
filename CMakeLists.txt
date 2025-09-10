@@ -4,17 +4,10 @@ if(CONFIG_DW3000)
 
 zephyr_library()
 
-if(CONFIG_SOC_FAMILY_NORDIC_NRF)
-    zephyr_library_sources(platform/dw3000_spi_nrfx.c)
-    message(STATUS "DW3000: Using NRFX optimized SPI driver.")
-else()
-    zephyr_library_sources(platform/dw3000_spi.c)
-    message(STATUS "DW3000: Using standard Zephyr SPI driver.")
-endif()
-
 zephyr_library_sources(
     platform/deca_port.c
     platform/dw3000_hw.c
+    platform/dw3000_spi.c
     platform/dw3000_spi_trace.c
     platform/deca_compat.c
     dwt_uwb_driver/deca_interface.c
