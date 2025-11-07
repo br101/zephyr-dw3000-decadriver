@@ -193,14 +193,16 @@ int32_t dw3000_spi_read(uint16_t headerLength, uint8_t* headerBuffer,
 
 void dw3000_spi_wakeup()
 {
+	/* CS pin should be configured as active low
+	 * To wake up, we set CS to 1, which will pull it low, for 500us */
 #if KERNEL_VERSION_MAJOR > 3                                                   \
 	|| (KERNEL_VERSION_MAJOR == 3 && KERNEL_VERSION_MINOR >= 4)
-	gpio_pin_set_dt(&cs_ctrl.gpio, 0);
-	k_sleep(K_USEC(500));
 	gpio_pin_set_dt(&cs_ctrl.gpio, 1);
-#else
-	gpio_pin_set_dt(&cs_ctrl->gpio, 0);
 	k_sleep(K_USEC(500));
+	gpio_pin_set_dt(&cs_ctrl.gpio, 0);
+#else
 	gpio_pin_set_dt(&cs_ctrl->gpio, 1);
+	k_sleep(K_USEC(500));
+	gpio_pin_set_dt(&cs_ctrl->gpio, 0);
 #endif
 }
