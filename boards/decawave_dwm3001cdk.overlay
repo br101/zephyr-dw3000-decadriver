@@ -1,0 +1,24 @@
+/* DWM3001CDK DW3110 wiring adapted from svhoy board DTS */
+// https://github.com/svhoy/uwb_zephyr_dwm3001cdk
+
+&spi3 {
+	status = "okay";
+	compatible = "nordic,nrf-spim";
+	cs-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+
+	dw3000: dw3000@0 {
+		compatible = "decawave,dw3000";
+		reg = <0>;
+		status = "okay";
+		spi-max-frequency = <32000000>;
+		irq-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
+		wakeup-gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+/ {
+	aliases {
+		dw3000 = &dw3000;
+	};
+};
