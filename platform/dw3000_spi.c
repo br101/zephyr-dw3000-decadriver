@@ -24,7 +24,10 @@ LOG_MODULE_DECLARE(dw3000, CONFIG_DW3000_LOG_LEVEL);
 #define DW_SPI	DT_PARENT(DT_INST(0, decawave_dw3000))
 
 static const struct device* spi;
-#if KERNEL_VERSION_MAJOR > 3                                                   \
+#if KERNEL_VERSION_MAJOR > 4                                                   \
+	|| (KERNEL_VERSION_MAJOR == 4 && KERNEL_VERSION_MINOR >= 3)
+static struct spi_cs_control cs_ctrl = SPI_CS_CONTROL_INIT(DW_INST);
+#elif KERNEL_VERSION_MAJOR > 3                                                 \
 	|| (KERNEL_VERSION_MAJOR == 3 && KERNEL_VERSION_MINOR >= 4)
 static struct spi_cs_control cs_ctrl = SPI_CS_CONTROL_INIT(DW_INST, 0);
 #else
